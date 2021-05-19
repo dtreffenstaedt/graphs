@@ -56,10 +56,10 @@ template <std::size_t N, typename W>
     return parents;
 }
 
-
 } // namespace graphs
 
-auto main() -> int {
+auto main() -> int
+{
 
     graphs::graph<7, std::size_t> graph{std::array<std::size_t, 7*7>{
             0, 14, 0, 10, 0, 0, 0,
@@ -74,14 +74,14 @@ auto main() -> int {
     auto parents = prim(graph, 0);
 
     for (std::size_t i { 0 }; i < 7; i++) {
-        std::cout<<std::to_string(i);
+        std::cout << std::to_string(i);
         for (std::size_t j { parents.at(i) };;) {
-            std::cout<<" <- "<<std::to_string(j);
+            std::cout << " <- " << std::to_string(j);
             if (j == parents.at(j)) {
                 break;
             }
             j = parents.at(j);
         }
-        std::cout<<"\n";
+        std::cout << "\n";
     }
 }

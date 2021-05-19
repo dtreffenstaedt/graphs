@@ -1,11 +1,11 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <cstdint>
 #include <array>
-#include <vector>
-#include <type_traits>
+#include <cstdint>
 #include <numeric>
+#include <type_traits>
+#include <vector>
 
 namespace graphs {
 
@@ -60,7 +60,8 @@ graph<N, W, S, D>::graph(const std::array<W, N * N>& matrix)
 }
 
 template <std::size_t N, typename W, bool S, W D>
-constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight) {
+constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight)
+{
     if (S) {
         m_edges[pos(j, i)] = weight;
     }
@@ -68,7 +69,8 @@ constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight) {
 }
 
 template <std::size_t N, typename W, bool S, W D>
-constexpr void graph<N, W, S, D>::unset(std::size_t i, std::size_t j) {
+constexpr void graph<N, W, S, D>::unset(std::size_t i, std::size_t j)
+{
     set(std::move(i), std::move(j), 0);
 }
 
@@ -90,7 +92,8 @@ auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::vector<std::size
 }
 
 template <std::size_t N, typename W, bool S, W D>
-constexpr auto graph<N, W, S, D>::get(std::size_t i, std::size_t j) const -> W {
+constexpr auto graph<N, W, S, D>::get(std::size_t i, std::size_t j) const -> W
+{
     return m_edges[pos(std::move(i), std::move(j))];
 }
 
@@ -103,8 +106,8 @@ constexpr auto graph<N, W, S, D>::n() const -> std::size_t
 template <std::size_t N, typename W, bool S, W D>
 constexpr auto graph<N, W, S, D>::rank(std::size_t j) const -> std::size_t
 {
-    return std::accumulate(m_edges.begin() + pos(0, j), m_edges.begin() + pos(N - 1, j), 0, [](W first, W second){
-        return (second != 0)?(first + second):first;
+    return std::accumulate(m_edges.begin() + pos(0, j), m_edges.begin() + pos(N - 1, j), 0, [](W first, W second) {
+        return (second != 0) ? (first + second) : first;
     });
 }
 

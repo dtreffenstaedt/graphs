@@ -1,6 +1,5 @@
 #include "graph.h"
 
-
 #include <limits>
 #include <numeric>
 
@@ -21,10 +20,9 @@ template <std::size_t N, typename W>
 
     parents.at(start) = start; // set the parent of the start node to itself
 
-
     std::size_t n_visited { 1 }; // number of visited nodes
 
-    for (std::size_t i {start};;) {
+    for (std::size_t i { start };;) {
 
         visited.at(i) = true; // set the current node to visited
 
@@ -41,7 +39,7 @@ template <std::size_t N, typename W>
 
             // if the weight decreases by going through the current node, update the tree
             if (weights.at(j) > (weights.at(i) + weight)) {
-                weights.at(j) =  weights.at(i) + weight;
+                weights.at(j) = weights.at(i) + weight;
                 parents.at(j) = i;
             }
         }
@@ -69,7 +67,6 @@ template <std::size_t N, typename W>
     return parents;
 }
 
-
 } // namespace graphs
 
 auto main() -> int {
@@ -87,14 +84,14 @@ auto main() -> int {
     auto parents = dijkstra(graph, 6);
 
     for (std::size_t i { 0 }; i < 7; i++) {
-        std::cout<<names.at(i);
+        std::cout << names.at(i);
         for (std::size_t j { parents.at(i) };;) {
-            std::cout<<" <- "<<names.at(j);
+            std::cout << " <- " << names.at(j);
             if (j == parents.at(j)) {
                 break;
             }
             j = parents.at(j);
         }
-        std::cout<<"\n";
+        std::cout << "\n";
     }
 }
