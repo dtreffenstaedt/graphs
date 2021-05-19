@@ -10,17 +10,17 @@
 namespace graphs {
 
 template <std::size_t N, typename W>
-[[nodiscard]] auto prim(graph<N, W> g, std::size_t start) -> std::array<std::size_t, N>
+[[nodiscard]] auto prim(graph<N, W> g, std::size_t start) -> graph<N, W>
 {
-    std::array<std::size_t, N> parents {}; // The parent nodes to all nodes
     std::vector<std::size_t> unvisited {}; // contains all unvisited nodes
     std::vector<std::size_t> visited {}; // contains the visited nodes
 
-    parents.at(start) = start;
 
     // populate the unvisited vector
     unvisited.resize(N);
     std::iota(unvisited.begin(), unvisited.end(), 0);
+
+    graph<N, W> result {};
 
     for (std::size_t k { start }; !unvisited.empty();) {
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), k));
@@ -50,11 +50,11 @@ template <std::size_t N, typename W>
             }
         }
 
-        parents.at(min_i) = min_j;
         k = min_i;
+        result.set(min_i, min_j, g.weight(min_i, min_j));
     }
 
-    return parents;
+    return result;
 }
 
 } // namespace graphs
@@ -76,17 +76,8 @@ auto main() -> int
         { 0, 0, 0, 12, 16, 22, 0 },
     } } };
 
-    auto parents = prim(graph, 0);
+    graph.print(std::cout);
+    std::cout<<"\nPrim (start = "<<names[0]<<"): \n";
 
-    for (std::size_t i { 0 }; i < n; i++) {
-        std::cout << names.at(i);
-        for (std::size_t j { parents.at(i) };;) {
-            std::cout << " <- " << names.at(j);
-            if (j == parents.at(j)) {
-                break;
-            }
-            j = parents.at(j);
-        }
-        std::cout << "\n";
-    }
+    prim(graph, 0).print(std::cout);
 }

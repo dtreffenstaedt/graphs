@@ -9,11 +9,10 @@
 namespace graphs {
 
 template <std::size_t N, typename W>
-[[nodiscard]] auto dijkstra(graph<N, W> g, std::size_t start) -> std::array<std::size_t, N>
+[[nodiscard]] auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
 {
     std::array<W, N> weights {}; // Stores the current total weights of the nodes
     std::array<std::size_t, N> parents {}; // The parent nodes to all nodes
-
     std::vector<std::size_t> unvisited {};
     unvisited.resize(N);
 
@@ -51,7 +50,13 @@ template <std::size_t N, typename W>
         i = min_i;
     }
 
-    return parents;
+    graph<N, W> result {};
+
+    for (std::size_t i { 0 }; i < N; i++) {
+        result.set(i, parents.at(i), g.weight(i, parents.at(i)));
+    }
+
+    return result;
 }
 
 } // namespace graphs
@@ -72,17 +77,10 @@ auto main() -> int
                 { 0, 0, 0, 8, 1, 0, 0 },
                 { 10, 9, 0, 0, 0, 0, 0 }
               }}};
-    auto parents = dijkstra(graph, 6);
 
-    for (std::size_t i { 0 }; i < n; i++) {
-        std::cout << names.at(i);
-        for (std::size_t j { parents.at(i) };;) {
-            std::cout << " <- " << names.at(j);
-            if (j == parents.at(j)) {
-                break;
-            }
-            j = parents.at(j);
-        }
-        std::cout << "\n";
-    }
+    graph.print(std::cout);
+    std::cout<<"\nDijkstra (start = "<<names[6]<<"): \n";
+
+    dijkstra(graph, 6).print(std::cout);
+
 }

@@ -6,6 +6,9 @@
 #include <numeric>
 #include <type_traits>
 #include <vector>
+#include <ostream>
+#include <iomanip>
+#include <iostream>
 
 namespace graphs {
 
@@ -29,6 +32,8 @@ public:
     [[nodiscard]] constexpr auto n() const -> std::size_t;
 
     [[nodiscard]] constexpr auto rank(std::size_t j) const -> std::size_t;
+
+    void print(std::ostream& stream = std::cout);
 
 private:
     [[nodiscard]] constexpr auto pos(std::size_t i, std::size_t j) const -> std::size_t;
@@ -120,6 +125,19 @@ constexpr auto graph<N, W, S, D>::pos(std::size_t i, std::size_t j) const -> std
 {
     return N * j + i;
 }
+
+template <std::size_t N, typename W, bool S, W D>
+void graph<N, W, S, D>::print(std::ostream& stream)
+{
+    stream<<std::setfill(' ');
+    for (std::size_t i { 0 }; i < N; i++) {
+        for (std::size_t j { 0 }; j < N; j++) {
+            stream<<' '<<std::setw(2)<<weight(i, j);
+        }
+        stream<<'\n';
+    }
+}
+
 
 }
 

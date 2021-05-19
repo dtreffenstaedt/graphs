@@ -15,8 +15,8 @@ struct edge_t {
     std::size_t second {};
 };
 
-template <std::size_t N>
-[[nodiscard]] auto connected(graph<N, bool> g, std::size_t start, std::size_t search) -> bool
+template <std::size_t N, typename W>
+[[nodiscard]] auto connected(graph<N, W> g, std::size_t start, std::size_t search) -> bool
 {
     std::stack<std::size_t> stack {};
     stack.push(start);
@@ -33,7 +33,7 @@ template <std::size_t N>
         }
 
         for (const auto& j : unvisited) {
-            if (g.weight(i, j)) {
+            if (g.weight(i, j) != 0) {
                 stack.push(j);
             }
         }
@@ -43,11 +43,8 @@ template <std::size_t N>
 }
 
 template <std::size_t N, typename W>
-[[nodiscard]] auto kruskal(graph<N, W> g) -> std::vector<edge_t>
+[[nodiscard]] auto kruskal(graph<N, W> g) -> graph<N, W>
 {
-
-    graph<N, bool> store {};
-
     std::vector<edge_t> edges {};
     for (std::size_t i { 0 }; i < (N - 1); i++) {
         for (std::size_t j { i + 1 }; j < N; j++) {
@@ -59,19 +56,18 @@ template <std::size_t N, typename W>
 
     std::sort(edges.begin(), edges.end(), [&](const edge_t& lhs, const edge_t& rhs){return g.weight(lhs.first, lhs.second) < g.weight(rhs.first, rhs.second);});
 
-    std::vector<edge_t> stored {};
+    graph<N, W> result{};
 
     for (edge_t k { edges.front() }; !edges.empty();) {
-        if (!connected(store, k.first, k.second)) {
-            stored.emplace_back(k);
-            store.set(k.first, k.second);
+        if (!connected(result, k.first, k.second)) {
+            result.set(k.first, k.second, g.weight(k.first, k.second));
         }
 
         edges.erase(edges.begin());
         k = edges.front();
     }
 
-    return stored;
+    return result;
 }
 
 } // namespace graphs
@@ -92,9 +88,8 @@ auto main() -> int
         { 0, 0, 0, 12, 16, 22, 0 },
     } } };
 
-    auto result = kruskal(graph);
+    graph.print(std::cout);
+    std::cout<<"\nKruskal: \n";
 
-    for (const auto& e : result) {
-        std::cout << names.at(e.first) << " - " << names.at(e.second) << '\n';
-    }
+    kruskal(graph).print(std::cout);
 }
