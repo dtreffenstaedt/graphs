@@ -16,6 +16,7 @@ class graph {
 public:
     graph(const std::array<std::array<W, N>, N>& matrix);
     graph(const std::array<W, N * N>& matrix);
+    graph();
 
     constexpr void set(std::size_t i, std::size_t j, W weight = D);
 
@@ -42,7 +43,6 @@ private:
 //////////////////////
 
 namespace graphs {
-
 template <std::size_t N, typename W, bool S, W D>
 graph<N, W, S, D>::graph(const std::array<std::array<W, N>, N>& matrix)
 {
@@ -58,6 +58,10 @@ graph<N, W, S, D>::graph(const std::array<W, N * N>& matrix)
     : m_edges { matrix }
 {
 }
+
+template <std::size_t N, typename W, bool S, W D>
+graph<N, W, S, D>::graph() = default;
+
 
 template <std::size_t N, typename W, bool S, W D>
 constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight)

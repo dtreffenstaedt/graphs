@@ -2,6 +2,10 @@ set(DIJKSTRA_SOURCE_FILES
     "${PROJECT_SRC_DIR}/dijkstra.cpp"
     )
 
+set(KRUSKAL_SOURCE_FILES
+    "${PROJECT_SRC_DIR}/kruskal.cpp"
+    )
+
 set(PRIM_SOURCE_FILES
     "${PROJECT_SRC_DIR}/prim.cpp"
     )
