@@ -19,14 +19,10 @@ template <std::size_t N, typename W>
     parents.at(start) = start;
 
     // populate the unvisited vector
-    for (std::size_t i { 0 }; i < N; i++) {
-        unvisited.emplace_back(i);
-    }
+    unvisited.resize(N);
+    std::iota(unvisited.begin(), unvisited.end(), 0);
 
-
-    std::size_t k { start };
-
-    while (visited.size() < N) {
+    for (std::size_t k { start }; !unvisited.empty();) {
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), k));
         visited.emplace_back(k);
 
@@ -68,17 +64,17 @@ auto main() -> int
 
     constexpr std::size_t n { 7 };
 
-    std::array<std::string, n> names {"1", "2", "3", "4", "5", "6", "7"};
+    std::array<std::string, n> names { "1", "2", "3", "4", "5", "6", "7" };
 
-    graphs::graph<n, std::size_t> graph{std::array<std::size_t, n*n>{
-            0, 14, 0, 10, 0, 0, 0,
-            14, 0, 16, 18, 13, 0, 0,
-            0, 16, 0, 0, 9, 0, 0,
-            10, 18, 0, 0, 30, 17, 12,
-            0, 13, 9, 30, 0, 0, 16,
-            0, 0, 0, 17, 0, 0, 22,
-            0, 0, 0, 12, 16, 22, 0,
-        }};
+    graphs::graph<n, std::size_t> graph { std::array<std::array<std::size_t, n>, n> { {
+        { 0, 14, 0, 10, 0, 0, 0 },
+        { 14, 0, 16, 18, 13, 0, 0 },
+        { 0, 16, 0, 0, 9, 0, 0 },
+        { 10, 18, 0, 0, 30, 17, 12 },
+        { 0, 13, 9, 30, 0, 0, 16 },
+        { 0, 0, 0, 17, 0, 0, 22 },
+        { 0, 0, 0, 12, 16, 22, 0 },
+    } } };
 
     auto parents = prim(graph, 0);
 
