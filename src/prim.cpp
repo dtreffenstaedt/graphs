@@ -1,9 +1,10 @@
 #include "graph.h"
-#include "tree.h"
 
 #include <limits>
-#include <algorithm>
 #include <numeric>
+
+#include <algorithm>
+
 #include <iostream>
 
 namespace graphs {

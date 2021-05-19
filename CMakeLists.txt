@@ -16,7 +16,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-add_library(graphs OBJECT ${GRAPHS_SOURCE_FILES} ${GRAPHS_HEADER_FILES})
+add_library(graphs OBJECT ${GRAPHS_HEADER_FILES})
 add_executable(dijkstra ${DIJKSTRA_SOURCE_FILES})
 add_executable(prim ${PRIM_SOURCE_FILES})
 
@@ -30,3 +30,5 @@ target_link_libraries(dijkstra
 target_link_libraries(prim
     graphs
     )
+
+add_custom_target(clangformat COMMAND clang-format -style=WebKit -i ${DIJKSTRA_SOURCE_FILES} ${PRIM_SOURCE_FILES} ${GRAPHS_HEADER_FILES})

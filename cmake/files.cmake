@@ -8,7 +8,6 @@ set(PRIM_SOURCE_FILES
 
 set(GRAPHS_HEADER_FILES
     "${PROJECT_HEADER_DIR}/graph.h"
-    "${PROJECT_HEADER_DIR}/tree.h"
     )
 
 configure_file(
