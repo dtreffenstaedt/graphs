@@ -23,7 +23,7 @@ public:
 
     [[nodiscard]] auto neighbours(std::size_t i) const -> std::vector<std::size_t>;
 
-    [[nodiscard]] constexpr auto get(std::size_t i, std::size_t j) const -> W;
+    [[nodiscard]] constexpr auto weight(std::size_t i, std::size_t j) const -> W;
 
     [[nodiscard]] constexpr auto n() const -> std::size_t;
 
@@ -84,7 +84,7 @@ auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::vector<std::size
             continue;
         }
 
-        if (get(i, j) != 0) {
+        if (weight(i, j) != 0) {
             neighbours.emplace_back(i);
         }
     }
@@ -92,7 +92,7 @@ auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::vector<std::size
 }
 
 template <std::size_t N, typename W, bool S, W D>
-constexpr auto graph<N, W, S, D>::get(std::size_t i, std::size_t j) const -> W
+constexpr auto graph<N, W, S, D>::weight(std::size_t i, std::size_t j) const -> W
 {
     return m_edges[pos(std::move(i), std::move(j))];
 }

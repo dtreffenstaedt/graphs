@@ -30,7 +30,7 @@ template <std::size_t N, typename W>
         // go through all nodes
         for (std::size_t j { 0 }; j < N; j++) {
 
-            W weight = g.get(i, j); // get the weight of the current node
+            W weight = g.weight(i, j); // get the weight of the current node
 
             // if the node is already visited or not connected to the current node, skip it
             if ((weight == 0) || (visited.at(j))) {
@@ -71,8 +71,11 @@ template <std::size_t N, typename W>
 
 auto main() -> int {
 
-    std::array<std::string, 7> names {"a", "b", "c", "d", "e", "f", "s"};
-    graphs::graph<7, std::size_t> graph{std::array<std::size_t, 7*7>{
+    constexpr std::size_t n { 7 };
+
+    std::array<std::string, n> names {"a", "b", "c", "d", "e", "f", "s"};
+
+    graphs::graph<n, std::size_t> graph{std::array<std::size_t, n*n>{
              0, 0, 0, 8, 0, 0, 10
             ,0, 0, 2, 0, 6, 0, 9
             ,0, 2, 0, 2, 3, 0, 0
@@ -83,7 +86,7 @@ auto main() -> int {
         }};
     auto parents = dijkstra(graph, 6);
 
-    for (std::size_t i { 0 }; i < 7; i++) {
+    for (std::size_t i { 0 }; i < n; i++) {
         std::cout << names.at(i);
         for (std::size_t j { parents.at(i) };;) {
             std::cout << " <- " << names.at(j);
