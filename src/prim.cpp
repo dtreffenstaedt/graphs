@@ -14,11 +14,11 @@ auto main() -> int
         { 0, 13, 9, 30, 0, 0, 16 },
         { 0, 0, 0, 17, 0, 0, 22 },
         { 0, 0, 0, 12, 16, 22, 0 },
-    }}};
+    } } };
 
     std::array<std::string, n> names { "1", "2", "3", "4", "5", "6", "7" };
 
     std::cout << graph
-                <<"\nPrim (start = "<<names[0]<<"): \n\n"
-                << prim(graph, 0);
+              << "\nPrim (start = " << names[0] << "): \n\n"
+              << prim(graph, 0);
 }

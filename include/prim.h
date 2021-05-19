@@ -3,9 +3,9 @@
 
 #include "graph.h"
 
+#include <algorithm>
 #include <limits>
 #include <numeric>
-#include <algorithm>
 
 namespace graphs {
 
@@ -14,7 +14,6 @@ template <std::size_t N, typename W>
 {
     std::vector<std::size_t> unvisited {}; // contains all unvisited nodes
     std::vector<std::size_t> visited {}; // contains the visited nodes
-
 
     // populate the unvisited vector
     unvisited.resize(N);
@@ -58,6 +57,5 @@ template <std::size_t N, typename W>
 }
 
 } // namespace graphs
-
 
 #endif // GRAPHS_PRIM_H

@@ -3,12 +3,12 @@
 
 #include <array>
 #include <cstdint>
-#include <numeric>
-#include <type_traits>
-#include <vector>
-#include <ostream>
 #include <iomanip>
 #include <iostream>
+#include <numeric>
+#include <ostream>
+#include <type_traits>
+#include <vector>
 
 namespace graphs {
 
@@ -41,6 +41,8 @@ private:
     std::array<W, N * N> m_edges { 0 };
 };
 
+template <std::size_t N, typename W, bool S, W D>
+auto operator<<(std::ostream& stream, const graph<N, W, S, D>& g) -> std::ostream&;
 }
 
 //////////////////////
@@ -66,7 +68,6 @@ graph<N, W, S, D>::graph(const std::array<W, N * N>& matrix)
 
 template <std::size_t N, typename W, bool S, W D>
 graph<N, W, S, D>::graph() = default;
-
 
 template <std::size_t N, typename W, bool S, W D>
 constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight)
@@ -129,22 +130,21 @@ constexpr auto graph<N, W, S, D>::pos(std::size_t i, std::size_t j) const -> std
 template <std::size_t N, typename W, bool S, W D>
 void graph<N, W, S, D>::print(std::ostream& stream) const
 {
-    stream<<std::setfill(' ');
+    stream << std::setfill(' ');
     for (std::size_t i { 0 }; i < N; i++) {
         for (std::size_t j { 0 }; j < N; j++) {
-            stream<<' '<<std::setw(2)<<weight(i, j);
+            stream << ' ' << std::setw(2) << weight(i, j);
         }
-        stream<<'\n';
+        stream << '\n';
     }
 }
 
 template <std::size_t N, typename W, bool S, W D>
-auto operator<<(std::ostream& stream, const graph<N,W,S,D>& g) -> std::ostream&
+auto operator<<(std::ostream& stream, const graph<N, W, S, D>& g) -> std::ostream&
 {
     g.print(stream);
     return stream;
 }
-
 
 }
 

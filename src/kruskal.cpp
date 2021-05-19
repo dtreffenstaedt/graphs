@@ -14,9 +14,9 @@ auto main() -> int
         { 0, 13, 9, 30, 0, 0, 16 },
         { 0, 0, 0, 17, 0, 0, 22 },
         { 0, 0, 0, 12, 16, 22, 0 },
-    }}};
+    } } };
 
     std::cout << graph
-            <<"\nKruskal: \n\n"
-            << kruskal(graph);
+              << "\nKruskal: \n\n"
+              << kruskal(graph);
 }
