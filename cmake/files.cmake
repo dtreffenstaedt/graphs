@@ -12,6 +12,9 @@ set(PRIM_SOURCE_FILES
 
 set(GRAPHS_HEADER_FILES
     "${PROJECT_HEADER_DIR}/graph.h"
+    "${PROJECT_HEADER_DIR}/kruskal.h"
+    "${PROJECT_HEADER_DIR}/prim.h"
+    "${PROJECT_HEADER_DIR}/dijkstra.h"
     )
 
 configure_file(

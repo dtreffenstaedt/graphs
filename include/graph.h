@@ -33,7 +33,7 @@ public:
 
     [[nodiscard]] constexpr auto rank(std::size_t j) const -> std::size_t;
 
-    void print(std::ostream& stream = std::cout);
+    void print(std::ostream& stream = std::cout) const;
 
 private:
     [[nodiscard]] constexpr auto pos(std::size_t i, std::size_t j) const -> std::size_t;
@@ -127,7 +127,7 @@ constexpr auto graph<N, W, S, D>::pos(std::size_t i, std::size_t j) const -> std
 }
 
 template <std::size_t N, typename W, bool S, W D>
-void graph<N, W, S, D>::print(std::ostream& stream)
+void graph<N, W, S, D>::print(std::ostream& stream) const
 {
     stream<<std::setfill(' ');
     for (std::size_t i { 0 }; i < N; i++) {
@@ -136,6 +136,13 @@ void graph<N, W, S, D>::print(std::ostream& stream)
         }
         stream<<'\n';
     }
+}
+
+template <std::size_t N, typename W, bool S, W D>
+auto operator<<(std::ostream& stream, const graph<N,W,S,D>& g) -> std::ostream&
+{
+    g.print(stream);
+    return stream;
 }
 
 
