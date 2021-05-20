@@ -18,5 +18,5 @@ auto main() -> int
 
     std::cout << graph
               << "\nKruskal: \n\n"
-              << kruskal(graph);
+              << graphs::kruskal(graph);
 }

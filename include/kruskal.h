@@ -13,31 +13,6 @@ namespace graphs {
 template <std::size_t N, typename W>
 [[nodiscard]] auto kruskal(graph<N, W> g) -> graph<N, W>
 {
-    auto connected { [](graph<N, W> g, std::size_t start, std::size_t search) -> bool {
-        std::stack<std::size_t> stack {};
-        stack.push(start);
-
-        std::vector<std::size_t> unvisited {};
-        unvisited.resize(N);
-        std::iota(unvisited.begin(), unvisited.end(), 0);
-
-        for (std::size_t i { stack.top() }; !stack.empty();) {
-            unvisited.erase(std::find(unvisited.begin(), unvisited.end(), i));
-            stack.pop();
-            if (i == search) {
-                return true;
-            }
-
-            for (const auto& j : unvisited) {
-                if (g.weight(i, j) != 0) {
-                    stack.push(j);
-                }
-            }
-            i = stack.top();
-        }
-        return false;
-    } };
-
     struct edge_t {
         std::size_t first {};
         std::size_t second {};
@@ -58,7 +33,7 @@ template <std::size_t N, typename W>
     graph<N, W> result {};
 
     for (edge_t k { edges.front() }; !edges.empty();) {
-        if (!connected(result, k.first, k.second)) {
+        if (!result.connected(k.first, k.second)) {
             result.set(k.first, k.second, k.weight);
         }
 

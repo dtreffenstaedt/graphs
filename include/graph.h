@@ -9,6 +9,8 @@
 #include <ostream>
 #include <type_traits>
 #include <vector>
+#include <stack>
+#include <algorithm>
 
 namespace graphs {
 
@@ -32,6 +34,8 @@ public:
     [[nodiscard]] constexpr auto n() const -> std::size_t;
 
     [[nodiscard]] constexpr auto rank(std::size_t j) const -> std::size_t;
+
+    [[nodiscard]] auto connected(std::size_t start, std::size_t end) const -> bool;
 
     void print(std::ostream& stream = std::cout) const;
 
@@ -137,6 +141,33 @@ void graph<N, W, S, D>::print(std::ostream& stream) const
         }
         stream << '\n';
     }
+}
+
+template <std::size_t N, typename W, bool S, W D>
+auto graph<N, W, S, D>::connected(std::size_t start, std::size_t end) const -> bool
+{
+    std::stack<std::size_t> stack {};
+    stack.emplace(start);
+
+    std::vector<std::size_t> unvisited {};
+    unvisited.resize(N);
+    std::iota(unvisited.begin(), unvisited.end(), 0);
+
+    for (std::size_t i { stack.top() }; !stack.empty();) {
+        unvisited.erase(std::find(unvisited.begin(), unvisited.end(), i));
+        stack.pop();
+        if (i == end) {
+            return true;
+        }
+
+        for (const auto& j : unvisited) {
+            if (weight(i, j) != 0) {
+                stack.emplace(j);
+            }
+        }
+        i = stack.top();
+    }
+    return false;
 }
 
 template <std::size_t N, typename W, bool S, W D>

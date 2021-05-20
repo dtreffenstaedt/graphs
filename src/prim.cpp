@@ -20,5 +20,5 @@ auto main() -> int
 
     std::cout << graph
               << "\nPrim (start = " << names[0] << "): \n\n"
-              << prim(graph, 0);
+              << graphs::prim(graph, 0);
 }

@@ -18,5 +18,5 @@ auto main() -> int
 
     std::cout << graph
               << "\nDijkstra (start = " << names[6] << "): \n\n"
-              << dijkstra(graph, 6);
+              << graphs::dijkstra(graph, 6);
 }
