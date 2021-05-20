@@ -1,16 +1,16 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <ostream>
+#include <stack>
 #include <type_traits>
 #include <vector>
-#include <stack>
-#include <algorithm>
 
 namespace graphs {
 
