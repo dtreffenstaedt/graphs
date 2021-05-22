@@ -40,7 +40,7 @@ auto kruskal(graph<W> g, bool print = false) -> graph<W>
     }
 
     for (const auto& edge : edges) {
-        if (!result.connected(edge.first, edge.second)) {
+        if (!result.connected_bi_bfs(edge.first, edge.second)) {
             result.set(edge.first, edge.second, edge.weight);
 
         if (print) {

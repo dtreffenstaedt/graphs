@@ -1,4 +1,3 @@
-#include "kruskal.h"
 #include "maze.h"
 
 
@@ -25,7 +24,6 @@ auto main(int argc, const char* argv[]) -> int
 
     std::size_t maze_dimension { options["dimension"].as<std::size_t>() };
 
-    graphs::maze m { maze_dimension, [](graphs::graph<std::size_t> g){return graphs::kruskal(std::move(g), false);}};
+    graphs::maze m { maze_dimension};
 
-    m.show();
 }

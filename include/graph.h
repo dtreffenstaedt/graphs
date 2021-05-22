@@ -8,6 +8,7 @@
 #include <iostream>
 #include <numeric>
 #include <ostream>
+#include <queue>
 #include <stack>
 #include <type_traits>
 #include <vector>
@@ -39,7 +40,10 @@ public:
 
     [[nodiscard]] auto rank(std::size_t j) const -> std::size_t;
 
-    [[nodiscard]] auto connected(std::size_t start, std::size_t end) const -> bool;
+    [[nodiscard]] auto connected_bi_dfs(std::size_t start, std::size_t end) const -> bool;
+    [[nodiscard]] auto connected_bi_bfs(std::size_t start, std::size_t end) const -> bool;
+    [[nodiscard]] auto connected_dfs(std::size_t start, std::size_t end) const -> bool;
+    [[nodiscard]] auto connected_bfs(std::size_t start, std::size_t end) const -> bool;
 
     void print(std::ostream& stream = std::cout) const;
 
@@ -173,7 +177,129 @@ void graph<W, S, D>::print(std::ostream& stream) const
 }
 
 template <typename W, bool S, W D>
-auto graph<W, S, D>::connected(std::size_t start, std::size_t end) const -> bool
+auto graph<W, S, D>::connected_bi_bfs(std::size_t start, std::size_t end) const -> bool
+{
+    std::queue<std::size_t> queue_s {};
+    queue_s.emplace(start);
+    std::queue<std::size_t> queue_e {};
+    queue_e.emplace(end);
+
+    std::vector<bool> visited_s {};
+    visited_s.resize(m_dimension);
+    std::fill(visited_s.begin(), visited_s.end(), false);
+
+    std::vector<bool> visited_e {};
+    visited_e.resize(m_dimension);
+    std::fill(visited_e.begin(), visited_e.end(), false);
+
+    std::size_t s { };
+    std::size_t e { };
+
+
+    for (;!queue_s.empty() && !queue_e.empty();) {
+        s = queue_s.front();
+        e = queue_e.front();
+        queue_s.pop();
+        queue_e.pop();
+        if (!visited_s.at(s)) {
+            visited_s.at(s) = true;
+
+            if (visited_e.at(s) || (s == end)) {
+                return true;
+            }
+
+            for (std::size_t j { 0 }; j < m_dimension; j++) {
+                if (visited_s.at(j)) {
+                    continue;
+                }
+                if (weight(s, j) != 0) {
+                    queue_s.emplace(j);
+                }
+            }
+        }
+        if (!visited_e.at(e)) {
+            visited_e.at(e) = true;
+
+            if (visited_s.at(e) || (e == start)) {
+                return true;
+            }
+
+            for (std::size_t j { 0 }; j < m_dimension; j++) {
+                if (visited_e.at(j)) {
+                    continue;
+                }
+                if (weight(e, j) != 0) {
+                    queue_e.emplace(j);
+                }
+            }
+        }
+    }
+    return false;
+}
+
+template <typename W, bool S, W D>
+auto graph<W, S, D>::connected_bi_dfs(std::size_t start, std::size_t end) const -> bool
+{
+    std::stack<std::size_t> stack_s {};
+    stack_s.emplace(start);
+    std::stack<std::size_t> stack_e {};
+    stack_e.emplace(end);
+
+    std::vector<bool> visited_s {};
+    visited_s.resize(m_dimension);
+    std::fill(visited_s.begin(), visited_s.end(), false);
+
+    std::vector<bool> visited_e {};
+    visited_e.resize(m_dimension);
+    std::fill(visited_e.begin(), visited_e.end(), false);
+
+    std::size_t s { };
+    std::size_t e { };
+
+
+    for (;!stack_s.empty() && !stack_e.empty();) {
+        s = stack_s.top();
+        e = stack_e.top();
+        stack_s.pop();
+        stack_e.pop();
+        if (!visited_s.at(s)) {
+            visited_s.at(s) = true;
+
+            if (visited_e.at(s) || (s == end)) {
+                return true;
+            }
+
+            for (std::size_t j { 0 }; j < m_dimension; j++) {
+                if (visited_s.at(j)) {
+                    continue;
+                }
+                if (weight(s, j) != 0) {
+                    stack_s.emplace(j);
+                }
+            }
+        }
+        if (!visited_e.at(e)) {
+            visited_e.at(e) = true;
+
+            if (visited_s.at(e) || (e == start)) {
+                return true;
+            }
+
+            for (std::size_t j { 0 }; j < m_dimension; j++) {
+                if (visited_e.at(j)) {
+                    continue;
+                }
+                if (weight(e, j) != 0) {
+                    stack_e.emplace(j);
+                }
+            }
+        }
+    }
+    return false;
+}
+
+template <typename W, bool S, W D>
+auto graph<W, S, D>::connected_dfs(std::size_t start, std::size_t end) const -> bool
 {
     std::stack<std::size_t> stack {};
     stack.emplace(start);
@@ -182,9 +308,14 @@ auto graph<W, S, D>::connected(std::size_t start, std::size_t end) const -> bool
     unvisited.resize(m_dimension);
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
-    for (std::size_t i { stack.top() }; !stack.empty();) {
-        unvisited.erase(std::find(unvisited.begin(), unvisited.end(), i));
+    for (std::size_t i { stack.top() }; !stack.empty();i = stack.top()) {
+        const auto it = std::find(unvisited.begin(), unvisited.end(), i);
         stack.pop();
+        if (it == unvisited.end()) {
+            continue;
+        }
+        unvisited.erase(it);
+
         if (i == end) {
             return true;
         }
@@ -194,7 +325,37 @@ auto graph<W, S, D>::connected(std::size_t start, std::size_t end) const -> bool
                 stack.emplace(j);
             }
         }
-        i = stack.top();
+    }
+    return false;
+}
+
+template <typename W, bool S, W D>
+auto graph<W, S, D>::connected_bfs(std::size_t start, std::size_t end) const -> bool
+{
+    std::queue<std::size_t> queue {};
+    queue.emplace(start);
+
+    std::vector<std::size_t> unvisited {};
+    unvisited.resize(m_dimension);
+    std::iota(unvisited.begin(), unvisited.end(), 0);
+
+    for (std::size_t i { queue.front() }; !queue.empty();i = queue.front()) {
+        const auto it = std::find(unvisited.begin(), unvisited.end(), i);
+        queue.pop();
+        if (it == unvisited.end()) {
+            continue;
+        }
+        unvisited.erase(it);
+
+        if (i == end) {
+            return true;
+        }
+
+        for (const auto& j : unvisited) {
+            if (weight(i, j) != 0) {
+                queue.emplace(j);
+            }
+        }
     }
     return false;
 }
