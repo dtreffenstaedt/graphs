@@ -12,17 +12,17 @@
 
 namespace graphs {
 
-template <std::size_t N, typename W>
-auto prim(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
+template <typename W>
+auto prim(graph<W> g, std::size_t start, bool print = false) -> graph<W>
 {
     std::vector<std::size_t> unvisited {}; // contains all unvisited nodes
     std::vector<std::size_t> visited {}; // contains the visited nodes
 
     // populate the unvisited vector
-    unvisited.resize(N);
+    unvisited.resize(g.dimension());
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
-    graph<N, W> result {};
+    graph<W> result {g.dimension()};
     if (print) {
         std::cout<<result;
     }
@@ -60,7 +60,7 @@ auto prim(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
 
         if (print) {
             std::this_thread::sleep_for(std::chrono::milliseconds{300});
-            std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+            std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
             std::this_thread::sleep_for(std::chrono::milliseconds{300});
         }
     }

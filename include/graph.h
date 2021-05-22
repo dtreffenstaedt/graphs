@@ -17,41 +17,41 @@
 
 namespace graphs {
 
-template <std::size_t N, typename W = bool, bool S = true, W D = 1>
+template <typename W = bool, bool S = true, W D = 1>
 class graph {
     static_assert(std::is_integral<W>::value);
 
 public:
-    graph(const std::array<std::array<W, N>, N>& matrix);
-    graph(const std::array<W, N * N>& matrix);
-    graph();
+    graph(const std::vector<std::vector<W>>& matrix);
+    graph(std::size_t dimension);
 
-    constexpr void set(std::size_t i, std::size_t j, W weight = D);
+    void set(std::size_t i, std::size_t j, W weight = D);
 
-    constexpr void unset(std::size_t i, std::size_t j);
+    void unset(std::size_t i, std::size_t j);
 
-    auto remove_weight() const -> graph<N, bool>;
+    auto remove_weight() const -> graph< bool>;
 
     [[nodiscard]] auto neighbours(std::size_t i) const -> std::map<std::size_t, W>;
 
-    [[nodiscard]] constexpr auto weight(std::size_t i, std::size_t j) const -> W;
+    [[nodiscard]] auto weight(std::size_t i, std::size_t j) const -> W;
 
-    [[nodiscard]] constexpr auto n() const -> std::size_t;
+    [[nodiscard]] auto dimension() const -> std::size_t;
 
-    [[nodiscard]] constexpr auto rank(std::size_t j) const -> std::size_t;
+    [[nodiscard]] auto rank(std::size_t j) const -> std::size_t;
 
     [[nodiscard]] auto connected(std::size_t start, std::size_t end) const -> bool;
 
     void print(std::ostream& stream = std::cout) const;
 
 private:
-    [[nodiscard]] constexpr auto pos(std::size_t i, std::size_t j) const -> std::size_t;
+    [[nodiscard]] auto pos(std::size_t i, std::size_t j) const -> std::size_t;
 
     std::vector<W> m_edges {};
+    std::size_t m_dimension {};
 };
 
-template <std::size_t N, typename W, bool S, W D>
-auto operator<<(std::ostream& stream, const graph<N, W, S, D>& g) -> std::ostream&;
+template <typename W, bool S, W D>
+auto operator<<(std::ostream& stream, const graph<W, S, D>& g) -> std::ostream&;
 }
 
 //////////////////////
@@ -59,12 +59,14 @@ auto operator<<(std::ostream& stream, const graph<N, W, S, D>& g) -> std::ostrea
 //////////////////////
 
 namespace graphs {
-template <std::size_t N, typename W, bool S, W D>
-graph<N, W, S, D>::graph(const std::array<std::array<W, N>, N>& matrix)
+template <typename W, bool S, W D>
+graph<W, S, D>::graph(const std::vector<std::vector<W>>& matrix)
+    : m_dimension { matrix.size()}
 {
-    m_edges.resize(N * N);
-    for (std::size_t i { 0 }; i < N; i++) {
-        for (std::size_t j { 0 }; j < N; j++) {
+    m_edges.resize(dimension() * dimension());
+    for (std::size_t i { 0 }; i < dimension(); i++) {
+        assert(matrix[i].size() == dimension());
+        for (std::size_t j { 0 }; j < dimension(); j++) {
             if (S && (matrix[i][j] != matrix[j][i])) {
                 std::cerr<<"Matrix is not symmetric.\n"
                         <<"a_"<<std::to_string(i)<<','<<std::to_string(j)<<'='<<std::to_string(matrix[i][j])<<'\n'
@@ -76,20 +78,15 @@ graph<N, W, S, D>::graph(const std::array<std::array<W, N>, N>& matrix)
     }
 }
 
-template <std::size_t N, typename W, bool S, W D>
-graph<N, W, S, D>::graph(const std::array<W, N * N>& matrix)
-    : m_edges { matrix }
+template <typename W, bool S, W D>
+graph<W, S, D>::graph(std::size_t dimension)
+    : m_dimension { dimension }
 {
+    m_edges.resize(m_dimension * m_dimension);
 }
 
-template <std::size_t N, typename W, bool S, W D>
-graph<N, W, S, D>::graph()
-{
-    m_edges.resize(N * N);
-}
-
-template <std::size_t N, typename W, bool S, W D>
-constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight)
+template <typename W, bool S, W D>
+void graph<W, S, D>::set(std::size_t i, std::size_t j, W weight)
 {
     if (S) {
         m_edges[pos(j, i)] = weight;
@@ -97,19 +94,19 @@ constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight)
     m_edges[pos(std::move(i), std::move(j))] = std::move(weight);
 }
 
-template <std::size_t N, typename W, bool S, W D>
-constexpr void graph<N, W, S, D>::unset(std::size_t i, std::size_t j)
+template <typename W, bool S, W D>
+void graph<W, S, D>::unset(std::size_t i, std::size_t j)
 {
     set(std::move(i), std::move(j), 0);
 }
 
-template <std::size_t N, typename W, bool S, W D>
-auto  graph<N, W, S, D>::remove_weight() const -> graph<N, bool>
+template <typename W, bool S, W D>
+auto  graph<W, S, D>::remove_weight() const -> graph< bool>
 {
-    graph<N, bool> result {};
+    graph<bool> result {m_dimension};
 
-    for (std::size_t i { 0 }; i < N; i++) {
-        for (std::size_t j { 0 }; j < N; j++) {
+    for (std::size_t i { 0 }; i < m_dimension; i++) {
+        for (std::size_t j { 0 }; j < m_dimension; j++) {
             if (weight(i, j) != 0) {
                 result.set(i, j);
             }
@@ -119,12 +116,12 @@ auto  graph<N, W, S, D>::remove_weight() const -> graph<N, bool>
     return result;
 }
 
-template <std::size_t N, typename W, bool S, W D>
-auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::map<std::size_t, W>
+template <typename W, bool S, W D>
+auto graph<W, S, D>::neighbours(std::size_t j) const -> std::map<std::size_t, W>
 {
     std::map<std::size_t, W> neighbours {};
 
-    for (std::size_t i { 0 }; i < N; i++) {
+    for (std::size_t i { 0 }; i < m_dimension; i++) {
         if (weight(i, j) != 0) {
             neighbours.emplace(i, weight(i, j));
         }
@@ -132,38 +129,38 @@ auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::map<std::size_t,
     return neighbours;
 }
 
-template <std::size_t N, typename W, bool S, W D>
-constexpr auto graph<N, W, S, D>::weight(std::size_t i, std::size_t j) const -> W
+template <typename W, bool S, W D>
+auto graph<W, S, D>::weight(std::size_t i, std::size_t j) const -> W
 {
     return m_edges[pos(std::move(i), std::move(j))];
 }
 
-template <std::size_t N, typename W, bool S, W D>
-constexpr auto graph<N, W, S, D>::n() const -> std::size_t
+template <typename W, bool S, W D>
+auto graph<W, S, D>::dimension() const -> std::size_t
 {
-    return N;
+    return m_dimension;
 }
 
-template <std::size_t N, typename W, bool S, W D>
-constexpr auto graph<N, W, S, D>::rank(std::size_t j) const -> std::size_t
+template <typename W, bool S, W D>
+auto graph<W, S, D>::rank(std::size_t j) const -> std::size_t
 {
-    return std::accumulate(m_edges.begin() + pos(0, j), m_edges.begin() + pos(N - 1, j), 0, [](W first, W second) {
+    return std::accumulate(m_edges.begin() + pos(0, j), m_edges.begin() + pos(m_dimension - 1, j), 0, [](W first, W second) {
         return (second != 0) ? (first + second) : first;
     });
 }
 
-template <std::size_t N, typename W, bool S, W D>
-constexpr auto graph<N, W, S, D>::pos(std::size_t i, std::size_t j) const -> std::size_t
+template <typename W, bool S, W D>
+auto graph<W, S, D>::pos(std::size_t i, std::size_t j) const -> std::size_t
 {
-    return N * j + i;
+    return m_dimension * j + i;
 }
 
-template <std::size_t N, typename W, bool S, W D>
-void graph<N, W, S, D>::print(std::ostream& stream) const
+template <typename W, bool S, W D>
+void graph<W, S, D>::print(std::ostream& stream) const
 {
     stream << std::setfill(' ');
-    for (std::size_t i { 0 }; i < N; i++) {
-        for (std::size_t j { 0 }; j < N; j++) {
+    for (std::size_t i { 0 }; i < m_dimension; i++) {
+        for (std::size_t j { 0 }; j < m_dimension; j++) {
             if (weight(i, j) == 0) {
                 stream << "";
             } else {
@@ -175,14 +172,14 @@ void graph<N, W, S, D>::print(std::ostream& stream) const
     }
 }
 
-template <std::size_t N, typename W, bool S, W D>
-auto graph<N, W, S, D>::connected(std::size_t start, std::size_t end) const -> bool
+template <typename W, bool S, W D>
+auto graph<W, S, D>::connected(std::size_t start, std::size_t end) const -> bool
 {
     std::stack<std::size_t> stack {};
     stack.emplace(start);
 
     std::vector<std::size_t> unvisited {};
-    unvisited.resize(N);
+    unvisited.resize(m_dimension);
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
     for (std::size_t i { stack.top() }; !stack.empty();) {
@@ -202,8 +199,8 @@ auto graph<N, W, S, D>::connected(std::size_t start, std::size_t end) const -> b
     return false;
 }
 
-template <std::size_t N, typename W, bool S, W D>
-auto operator<<(std::ostream& stream, const graph<N, W, S, D>& g) -> std::ostream&
+template <typename W, bool S, W D>
+auto operator<<(std::ostream& stream, const graph<W, S, D>& g) -> std::ostream&
 {
     g.print(stream);
     return stream;

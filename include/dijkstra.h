@@ -12,13 +12,17 @@
 
 namespace graphs {
 
-template <std::size_t N, typename W>
-auto dijkstra(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
+template <typename W>
+auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
 {
-    std::array<W, N> weights {}; // Stores the current total weights of the nodes
-    std::array<std::size_t, N> parents {}; // The parent nodes to all nodes
+
+    std::vector<W> weights {}; // Stores the current total weights of the nodes
+    std::vector<std::size_t> parents {}; // The parent nodes to all nodes
+    weights.resize(g.dimension());
+    parents.resize(g.dimension());
+
     std::vector<std::size_t> unvisited {};
-    unvisited.resize(N);
+    unvisited.resize(g.dimension());
 
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
@@ -28,7 +32,7 @@ auto dijkstra(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, 
 
     parents.at(start) = start; // set the parent of the start node to itself
 
-    graph<N, W> result {};
+    graph<W> result {g.dimension()};
 
     if (print) {
         std::cout<<result;
@@ -57,7 +61,7 @@ auto dijkstra(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, 
 
                     if (print) {
                         std::this_thread::sleep_for(std::chrono::milliseconds{300});
-                        std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+                        std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
                         std::this_thread::sleep_for(std::chrono::milliseconds{300});
                     }
                 }

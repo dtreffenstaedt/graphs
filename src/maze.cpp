@@ -4,42 +4,60 @@
 
 #include <random>
 
-template <std::size_t N>
-auto generate_grid_graph() -> graphs::graph<N*N, std::size_t>
-{
-    auto pos {[](std::size_t x, std::size_t y)->std::size_t {
-            return N*x + y;
-        }};
+class maze {
+public:
+    maze(std::size_t dimension, std::function<graphs::graph<std::size_t>(graphs::graph<std::size_t>)> algorithm);
 
-    graphs::graph<N*N, std::size_t> result {};
+    void show();
+
+private:
+    void generate();
+    [[nodiscard]] auto pos(std::size_t x, std::size_t y) const -> std::size_t;
+
+    std::size_t m_dimension;
+    std::function<graphs::graph<std::size_t>(graphs::graph<std::size_t>)> m_algorithm;
+    graphs::graph<bool> m_graph;
+};
+
+maze::maze(std::size_t dimension, std::function<graphs::graph<std::size_t>(graphs::graph<std::size_t>)> algorithm)
+    : m_dimension { dimension }
+    , m_algorithm { std::move(algorithm) }
+    , m_graph { dimension }
+{
+    generate();
+}
+
+auto maze::pos(std::size_t x, std::size_t y) const -> std::size_t
+{
+    return m_dimension*x + y;
+}
+
+void maze::generate()
+{
+    graphs::graph<std::size_t> result {m_dimension * m_dimension};
 
     std::random_device rd;
     std::uniform_int_distribution<std::size_t> dist(0, 99);
-    for (std::size_t x { 0 }; x < N; x++) {
-        for (std::size_t y { 0 }; y < N; y++) {
-            if (x != (N - 1)) {
+    for (std::size_t x { 0 }; x < m_dimension; x++) {
+        for (std::size_t y { 0 }; y < m_dimension; y++) {
+            if (x != (m_dimension - 1)) {
                 result.set(pos(x, y), pos(x + 1,y), dist(rd));
             }
-            if (y != (N - 1)) {
+            if (y != (m_dimension - 1)) {
                 result.set(pos(x, y), pos(x,y + 1), dist(rd));
             }
         }
     }
 
-    return result;
+    m_graph = m_algorithm(result).remove_weight();
 }
 
-template <std::size_t N>
-void show_maze(graphs::graph<N*N> graph)
+void maze::show()
 {
-    auto pos {[](std::size_t x, std::size_t y)->std::size_t {
-            return N*x + y;
-        }};
-
-    for (std::size_t y { 0 }; y < N; y++) {
-        for (std::size_t x { 0 }; x < N; x++) {
-            if (x < (N - 1)) {
-                if (graph.weight(pos(x,y), pos(x+1,y))) {
+    for (std::size_t y { 0 }; y < m_dimension; y++) {
+        for (std::size_t x { 0 }; x < m_dimension; x++) {
+            if (x < (m_dimension - 1)) {
+                if (m_graph.weight(pos(x,y), pos(x+1,y))) {
                     std::cout<<"·-";
                 } else {
                     std::cout<<"· ";
@@ -49,9 +67,9 @@ void show_maze(graphs::graph<N*N> graph)
             }
         }
         std::cout<<'\n';
-        for (std::size_t x { 0 }; x < N; x++) {
-            if (y < (N - 1)) {
-                if (graph.weight(pos(x,y), pos(x,y+1))) {
+        for (std::size_t x { 0 }; x < m_dimension; x++) {
+            if (y < (m_dimension - 1)) {
+                if (m_graph.weight(pos(x,y), pos(x,y+1))) {
                     std::cout<<"| ";
                 } else {
                     std::cout<<"  ";
@@ -64,7 +82,9 @@ void show_maze(graphs::graph<N*N> graph)
 
 auto main() -> int
 {
-    constexpr std::size_t maze_dimension { 50 };
+    constexpr std::size_t maze_dimension { 30 };
 
-    show_maze<maze_dimension>(graphs::kruskal(generate_grid_graph<maze_dimension>(), false).remove_weight());
+    maze m { maze_dimension, [](graphs::graph<std::size_t> g){return graphs::kruskal(std::move(g), false);}};
+
+    m.show();
 }

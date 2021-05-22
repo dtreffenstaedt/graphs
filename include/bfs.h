@@ -13,8 +13,8 @@
 
 namespace graphs {
 
-template <std::size_t N, typename W>
-auto bfs(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
+template <typename W>
+auto bfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
 {
     struct edge_t {
         std::size_t i {};
@@ -26,10 +26,10 @@ auto bfs(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
     queue.emplace(edge_t{start, start, 0});
 
     std::vector<std::size_t> unvisited {};
-    unvisited.resize(N);
+    unvisited.resize(g.dimension());
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
-    graph<N, W> result {};
+    graph<W> result {g.dimension()};
 
     if (print) {
         std::cout<<result;
@@ -47,7 +47,7 @@ auto bfs(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
 
         if (print) {
             std::this_thread::sleep_for(std::chrono::milliseconds{300});
-            std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+            std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
             std::this_thread::sleep_for(std::chrono::milliseconds{300});
         }
 
