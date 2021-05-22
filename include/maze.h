@@ -12,7 +12,7 @@
 namespace graphs {
 class maze {
 public:
-    maze(std::size_t dimension);
+    maze(std::size_t x, std::size_t y);
 
     void show();
 
@@ -25,20 +25,22 @@ private:
     void generate_maze();
     [[nodiscard]] auto pos(std::size_t x, std::size_t y) const -> std::size_t;
 
-    std::size_t m_dimension;
+    std::size_t m_x {};
+    std::size_t m_y {};
     graphs::graph<bool> m_graph;
 };
 
-maze::maze(std::size_t dimension)
-    : m_dimension { dimension }
-    , m_graph { dimension * dimension }
+maze::maze(std::size_t x, std::size_t y)
+    : m_x { x }
+    , m_y { y }
+    , m_graph { x * y }
 {
     generate();
 }
 
 auto maze::pos(std::size_t x, std::size_t y) const -> std::size_t
 {
-    return m_dimension*x + y;
+    return m_x*y + x;
 }
 
 void maze::generate()
@@ -49,12 +51,12 @@ void maze::generate()
 
 void maze::generate_graph()
 {
-    for (std::size_t x { 0 }; x < m_dimension; x++) {
-        for (std::size_t y { 0 }; y < m_dimension; y++) {
-            if (x != (m_dimension - 1)) {
+    for (std::size_t x { 0 }; x < m_x; x++) {
+        for (std::size_t y { 0 }; y < m_y; y++) {
+            if (x < (m_x - 1)) {
                 m_graph.set(pos(x, y), pos(x + 1,y));
             }
-            if (y != (m_dimension - 1)) {
+            if (y < (m_y - 1)) {
                 m_graph.set(pos(x, y), pos(x,y + 1));
             }
         }
@@ -69,6 +71,8 @@ void maze::generate_maze()
     };
 
     std::vector<edge_t> edges {};
+    std::cout<<std::to_string(m_graph.dimension())<<'\n';
+
     for (std::size_t i { 0 }; i < (m_graph.dimension() - 1); i++) {
         for (std::size_t j { i + 1 }; j < m_graph.dimension(); j++) {
             if (m_graph.weight(i, j) != 0) {
@@ -100,51 +104,11 @@ void maze::generate_maze()
     show();
 }
 
-void maze::show(std::size_t first, std::size_t second)
-{
-    for (std::size_t y { 0 }; y < m_dimension; y++) {
-        for (std::size_t x { 0 }; x < m_dimension; x++) {
-            if (x < (m_dimension - 1)) {
-                const std::size_t a { pos(x,y)};
-                const std::size_t b { pos(x+1,y)};
-                if (m_graph.weight(a, b)) {
-                    if (((a == first) && (b == second)) || ((b == first) && (a == second))) {
-                        std::cout<<"·\033[1;31m-\033[0m";
-                    } else {
-                        std::cout<<"·-";
-                    }
-                } else {
-                    std::cout<<"· ";
-                }
-            } else {
-                std::cout<<"·";
-            }
-        }
-        std::cout<<'\n';
-        for (std::size_t x { 0 }; x < m_dimension; x++) {
-            if (y < (m_dimension - 1)) {
-                const std::size_t a { pos(x,y)};
-                const std::size_t b { pos(x,y+1)};
-                if (m_graph.weight(a, b)) {
-                    if (((a == first) && (b == second)) || ((b == first) && (a == second))) {
-                        std::cout<<"\033[1;31m|\033[0m ";
-                    } else {
-                        std::cout<<"| ";
-                    }
-                } else {
-                    std::cout<<"  ";
-                }
-            }
-        }
-        std::cout<<'\n';
-    }
-}
-
 void maze::show()
 {
-    for (std::size_t y { 0 }; y < m_dimension; y++) {
-        for (std::size_t x { 0 }; x < m_dimension; x++) {
-            if (x < (m_dimension - 1)) {
+    for (std::size_t y { 0 }; y < m_y; y++) {
+        for (std::size_t x { 0 }; x < m_x; x++) {
+            if (x < (m_x - 1)) {
                 if (m_graph.weight(pos(x,y), pos(x+1,y))) {
                     std::cout<<"·-";
                 } else {
@@ -155,8 +119,8 @@ void maze::show()
             }
         }
         std::cout<<'\n';
-        for (std::size_t x { 0 }; x < m_dimension; x++) {
-            if (y < (m_dimension - 1)) {
+        for (std::size_t x { 0 }; x < m_x; x++) {
+            if (y < (m_y - 1)) {
                 if (m_graph.weight(pos(x,y), pos(x,y+1))) {
                     std::cout<<"| ";
                 } else {
