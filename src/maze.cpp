@@ -30,7 +30,7 @@ auto generate_grid_graph() -> graphs::graph<N*N, std::size_t>
 }
 
 template <std::size_t N>
-void show_labyrinth(graphs::graph<N*N> graph = graphs::kruskal(generate_grid_graph<N>(), false).remove_weight())
+void show_maze(graphs::graph<N*N> graph)
 {
     auto pos {[](std::size_t x, std::size_t y)->std::size_t {
             return N*x + y;
@@ -62,6 +62,7 @@ void show_labyrinth(graphs::graph<N*N> graph = graphs::kruskal(generate_grid_gra
 
 auto main() -> int
 {
+    constexpr std::size_t maze_dimension { 50 };
 
-    show_labyrinth<50>();
+    show_maze<maze_dimension>(graphs::kruskal(generate_grid_graph<maze_dimension>(), false).remove_weight());
 }
