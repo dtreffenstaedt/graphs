@@ -18,11 +18,16 @@ include_directories(
 
 add_library(graphs OBJECT ${GRAPHS_HEADER_FILES})
 add_executable(examples ${EXAMPLES_SOURCE_FILES})
+add_executable(maze ${MAZE_SOURCE_FILES})
 
 set_target_properties(graphs PROPERTIES LINKER_LANGUAGE CXX)
 
 
 target_link_libraries(examples
+    graphs
+    pthread
+    )
+target_link_libraries(maze
     graphs
     pthread
     )

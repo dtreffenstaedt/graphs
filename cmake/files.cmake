@@ -1,6 +1,9 @@
 set(EXAMPLES_SOURCE_FILES
     "${PROJECT_SRC_DIR}/examples.cpp"
     )
+set(MAZE_SOURCE_FILES
+    "${PROJECT_SRC_DIR}/maze.cpp"
+    )
 
 set(GRAPHS_HEADER_FILES
     "${PROJECT_HEADER_DIR}/graph.h"

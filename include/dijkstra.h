@@ -13,7 +13,7 @@
 namespace graphs {
 
 template <std::size_t N, typename W>
-auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
+auto dijkstra(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
 {
     std::array<W, N> weights {}; // Stores the current total weights of the nodes
     std::array<std::size_t, N> parents {}; // The parent nodes to all nodes
@@ -30,7 +30,9 @@ auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
 
     graph<N, W> result {};
 
-    std::cout<<result;
+    if (print) {
+        std::cout<<result;
+    }
 
     for (std::size_t i { start }; !unvisited.empty();) {
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), i));
@@ -53,8 +55,11 @@ auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
 
                     parents.at(j) = i;
 
-                    std::this_thread::sleep_for(std::chrono::seconds{2});
-                    std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+                    if (print) {
+                        std::this_thread::sleep_for(std::chrono::milliseconds{300});
+                        std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+                        std::this_thread::sleep_for(std::chrono::milliseconds{300});
+                    }
                 }
             }
             if (weights.at(j) < min) {
@@ -66,7 +71,9 @@ auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
         i = min_i;
     }
 
-    std::cout<<'\n';
+    if (print) {
+        std::cout<<'\n';
+    }
     return result;
 }
 

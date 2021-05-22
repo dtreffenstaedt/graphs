@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <cassert>
+#include <memory>
 
 namespace graphs {
 
@@ -29,6 +30,8 @@ public:
 
     constexpr void unset(std::size_t i, std::size_t j);
 
+    auto remove_weight() const -> graph<N, bool>;
+
     [[nodiscard]] auto neighbours(std::size_t i) const -> std::map<std::size_t, W>;
 
     [[nodiscard]] constexpr auto weight(std::size_t i, std::size_t j) const -> W;
@@ -44,7 +47,7 @@ public:
 private:
     [[nodiscard]] constexpr auto pos(std::size_t i, std::size_t j) const -> std::size_t;
 
-    std::array<W, N * N> m_edges { 0 };
+    std::vector<W> m_edges {};
 };
 
 template <std::size_t N, typename W, bool S, W D>
@@ -59,6 +62,7 @@ namespace graphs {
 template <std::size_t N, typename W, bool S, W D>
 graph<N, W, S, D>::graph(const std::array<std::array<W, N>, N>& matrix)
 {
+    m_edges.resize(N * N);
     for (std::size_t i { 0 }; i < N; i++) {
         for (std::size_t j { 0 }; j < N; j++) {
             if (S && (matrix[i][j] != matrix[j][i])) {
@@ -79,7 +83,10 @@ graph<N, W, S, D>::graph(const std::array<W, N * N>& matrix)
 }
 
 template <std::size_t N, typename W, bool S, W D>
-graph<N, W, S, D>::graph() = default;
+graph<N, W, S, D>::graph()
+{
+    m_edges.resize(N * N);
+}
 
 template <std::size_t N, typename W, bool S, W D>
 constexpr void graph<N, W, S, D>::set(std::size_t i, std::size_t j, W weight)
@@ -94,6 +101,22 @@ template <std::size_t N, typename W, bool S, W D>
 constexpr void graph<N, W, S, D>::unset(std::size_t i, std::size_t j)
 {
     set(std::move(i), std::move(j), 0);
+}
+
+template <std::size_t N, typename W, bool S, W D>
+auto  graph<N, W, S, D>::remove_weight() const -> graph<N, bool>
+{
+    graph<N, bool> result {};
+
+    for (std::size_t i { 0 }; i < N; i++) {
+        for (std::size_t j { 0 }; j < N; j++) {
+            if (weight(i, j) != 0) {
+                result.set(i, j);
+            }
+        }
+    }
+
+    return result;
 }
 
 template <std::size_t N, typename W, bool S, W D>
@@ -142,10 +165,11 @@ void graph<N, W, S, D>::print(std::ostream& stream) const
     for (std::size_t i { 0 }; i < N; i++) {
         for (std::size_t j { 0 }; j < N; j++) {
             if (weight(i, j) == 0) {
-                stream << "   ";
+                stream << "";
             } else {
-                stream << ' ' << std::setw(2) << weight(i, j);
+                stream << "\033[1;31m";
             }
+            stream << ' ' << std::setw(2) << weight(i, j)<<"\033[0m";
         }
         stream << '\n';
     }

@@ -14,7 +14,7 @@
 namespace graphs {
 
 template <std::size_t N, typename W>
-auto kruskal(graph<N, W> g) -> graph<N, W>
+auto kruskal(graph<N, W> g, bool print = false) -> graph<N, W>
 {
     struct edge_t {
         std::size_t first {};
@@ -35,18 +35,25 @@ auto kruskal(graph<N, W> g) -> graph<N, W>
 
     graph<N, W> result {};
 
-    std::cout<<result;
+    if (print) {
+        std::cout<<result;
+    }
 
     for (const auto& edge : edges) {
         if (!result.connected(edge.first, edge.second)) {
             result.set(edge.first, edge.second, edge.weight);
 
-            std::this_thread::sleep_for(std::chrono::seconds{2});
-            std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+        if (print) {
+                std::this_thread::sleep_for(std::chrono::milliseconds{300});
+                std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+                std::this_thread::sleep_for(std::chrono::milliseconds{300});
+        }
         }
     }
 
-    std::cout<<'\n';
+    if (print) {
+        std::cout<<'\n';
+    }
 
     return result;
 }

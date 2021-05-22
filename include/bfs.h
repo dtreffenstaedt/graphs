@@ -14,7 +14,7 @@
 namespace graphs {
 
 template <std::size_t N, typename W>
-auto bfs(graph<N, W> g, std::size_t start) -> graph<N, W>
+auto bfs(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
 {
     struct edge_t {
         std::size_t i {};
@@ -31,7 +31,9 @@ auto bfs(graph<N, W> g, std::size_t start) -> graph<N, W>
 
     graph<N, W> result {};
 
-    std::cout<<result;
+    if (print) {
+        std::cout<<result;
+    }
 
     for (edge_t i { queue.front() }; !queue.empty(); i = queue.front()) {
         queue.pop();
@@ -43,8 +45,11 @@ auto bfs(graph<N, W> g, std::size_t start) -> graph<N, W>
 
         result.set(i.parent, i.i, i.weight);
 
-        std::this_thread::sleep_for(std::chrono::seconds{2});
-        std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+        if (print) {
+            std::this_thread::sleep_for(std::chrono::milliseconds{300});
+            std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+            std::this_thread::sleep_for(std::chrono::milliseconds{300});
+        }
 
         for (const auto& j: unvisited) {
             const auto w { g.weight(i.i, j) };
@@ -55,7 +60,9 @@ auto bfs(graph<N, W> g, std::size_t start) -> graph<N, W>
         }
     }
 
-    std::cout<<'\n';
+    if (print) {
+        std::cout<<'\n';
+    }
 
     return result;
 }

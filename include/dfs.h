@@ -14,7 +14,7 @@
 namespace graphs {
 
 template <std::size_t N, typename W>
-auto dfs(graph<N, W> g, std::size_t start) -> graph<N, W>
+auto dfs(graph<N, W> g, std::size_t start, bool print = false) -> graph<N, W>
 {
     struct edge_t {
         std::size_t i {};
@@ -31,7 +31,9 @@ auto dfs(graph<N, W> g, std::size_t start) -> graph<N, W>
 
     graph<N, W> result {};
 
-    std::cout<<result;
+    if (print) {
+        std::cout<<result;
+    }
 
     for (edge_t i { stack.top() }; !stack.empty(); i = stack.top()) {
         stack.pop();
@@ -43,8 +45,11 @@ auto dfs(graph<N, W> g, std::size_t start) -> graph<N, W>
 
         result.set(i.parent, i.i, i.weight);
 
-        std::this_thread::sleep_for(std::chrono::seconds{2});
-        std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+        if (print) {
+            std::this_thread::sleep_for(std::chrono::milliseconds{300});
+            std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+            std::this_thread::sleep_for(std::chrono::milliseconds{300});
+        }
 
         for (const auto& j: unvisited) {
             const auto w { g.weight(i.i, j) };
@@ -54,7 +59,9 @@ auto dfs(graph<N, W> g, std::size_t start) -> graph<N, W>
             stack.emplace(edge_t{j, i.i, w});
         }
     }
-    std::cout<<'\n';
+    if (print) {
+        std::cout<<'\n';
+    }
 
     return result;
 }
