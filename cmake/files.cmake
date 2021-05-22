@@ -12,6 +12,7 @@ set(GRAPHS_HEADER_FILES
     "${PROJECT_HEADER_DIR}/dijkstra.h"
     "${PROJECT_HEADER_DIR}/dfs.h"
     "${PROJECT_HEADER_DIR}/bfs.h"
+    "${PROJECT_HEADER_DIR}/maze.h"
     )
 
 configure_file(
