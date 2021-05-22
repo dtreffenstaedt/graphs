@@ -44,6 +44,8 @@ void show_maze(graphs::graph<N*N> graph)
                 } else {
                     std::cout<<"· ";
                 }
+            } else {
+                std::cout<<"·";
             }
         }
         std::cout<<'\n';
