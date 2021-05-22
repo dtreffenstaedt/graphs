@@ -11,6 +11,7 @@
 #include <stack>
 #include <type_traits>
 #include <vector>
+#include <map>
 
 namespace graphs {
 
@@ -27,7 +28,7 @@ public:
 
     constexpr void unset(std::size_t i, std::size_t j);
 
-    [[nodiscard]] auto neighbours(std::size_t i) const -> std::vector<std::size_t>;
+    [[nodiscard]] auto neighbours(std::size_t i) const -> std::map<std::size_t, W>;
 
     [[nodiscard]] constexpr auto weight(std::size_t i, std::size_t j) const -> W;
 
@@ -89,17 +90,13 @@ constexpr void graph<N, W, S, D>::unset(std::size_t i, std::size_t j)
 }
 
 template <std::size_t N, typename W, bool S, W D>
-auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::vector<std::size_t>
+auto graph<N, W, S, D>::neighbours(std::size_t j) const -> std::map<std::size_t, W>
 {
-    std::vector<std::size_t> neighbours {};
+    std::map<std::size_t, W> neighbours {};
 
-    for (auto i { 0 }; i < N; i++) {
-        if (i == j) {
-            continue;
-        }
-
+    for (std::size_t i { 0 }; i < N; i++) {
         if (weight(i, j) != 0) {
-            neighbours.emplace_back(i);
+            neighbours.emplace(i, weight(i, j));
         }
     }
     return neighbours;
@@ -137,7 +134,11 @@ void graph<N, W, S, D>::print(std::ostream& stream) const
     stream << std::setfill(' ');
     for (std::size_t i { 0 }; i < N; i++) {
         for (std::size_t j { 0 }; j < N; j++) {
-            stream << ' ' << std::setw(2) << weight(i, j);
+            if (weight(i, j) == 0) {
+                stream << "   ";
+            } else {
+                stream << ' ' << std::setw(2) << weight(i, j);
+            }
         }
         stream << '\n';
     }

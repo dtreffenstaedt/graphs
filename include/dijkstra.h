@@ -7,10 +7,13 @@
 #include <limits>
 #include <numeric>
 
+#include <thread>
+#include <iostream>
+
 namespace graphs {
 
 template <std::size_t N, typename W>
-[[nodiscard]] auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
+auto dijkstra(graph<N, W> g, std::size_t start) -> graph<N, W>
 {
     std::array<W, N> weights {}; // Stores the current total weights of the nodes
     std::array<std::size_t, N> parents {}; // The parent nodes to all nodes
@@ -20,15 +23,19 @@ template <std::size_t N, typename W>
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
     std::fill(weights.begin(), weights.end(), std::numeric_limits<W>::max());
+
     weights.at(start) = 0; // set the weigth of the starting node to 0
 
     parents.at(start) = start; // set the parent of the start node to itself
+
+    graph<N, W> result {};
+
+    std::cout<<result;
 
     for (std::size_t i { start }; !unvisited.empty();) {
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), i));
 
         std::size_t min_i { 0 };
-
         W min { std::numeric_limits<W>::max() };
 
         for (const auto& j : unvisited) {
@@ -39,7 +46,15 @@ template <std::size_t N, typename W>
                 // if the weight decreases by going through the current node, update the tree
                 if (weights.at(j) > (weights.at(i) + weight)) {
                     weights.at(j) = weights.at(i) + weight;
+
+                    result.unset(parents.at(j), j);
+
+                    result.set(j, i, weight);
+
                     parents.at(j) = i;
+
+                    std::this_thread::sleep_for(std::chrono::seconds{2});
+                    std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
                 }
             }
             if (weights.at(j) < min) {
@@ -51,12 +66,7 @@ template <std::size_t N, typename W>
         i = min_i;
     }
 
-    graph<N, W> result {};
-
-    for (std::size_t i { 0 }; i < N; i++) {
-        result.set(i, parents.at(i), g.weight(i, parents.at(i)));
-    }
-
+    std::cout<<'\n';
     return result;
 }
 

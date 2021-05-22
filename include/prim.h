@@ -7,10 +7,13 @@
 #include <limits>
 #include <numeric>
 
+#include <thread>
+#include <iostream>
+
 namespace graphs {
 
 template <std::size_t N, typename W>
-[[nodiscard]] auto prim(graph<N, W> g, std::size_t start) -> graph<N, W>
+auto prim(graph<N, W> g, std::size_t start) -> graph<N, W>
 {
     std::vector<std::size_t> unvisited {}; // contains all unvisited nodes
     std::vector<std::size_t> visited {}; // contains the visited nodes
@@ -20,6 +23,7 @@ template <std::size_t N, typename W>
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
     graph<N, W> result {};
+    std::cout<<result;
 
     for (std::size_t k { start }; !unvisited.empty();) {
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), k));
@@ -51,7 +55,12 @@ template <std::size_t N, typename W>
 
         k = min_i;
         result.set(min_i, min_j, g.weight(min_i, min_j));
+
+        std::this_thread::sleep_for(std::chrono::seconds{2});
+        std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
     }
+
+    std::cout<<'\n';
 
     return result;
 }

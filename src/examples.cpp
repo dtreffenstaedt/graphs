@@ -1,4 +1,8 @@
+#include "kruskal.h"
 #include "prim.h"
+#include "dijkstra.h"
+#include "dfs.h"
+#include "bfs.h"
 
 #include <iostream>
 
@@ -16,9 +20,16 @@ auto main() -> int
         { 0, 0, 0, 12, 16, 22, 0 },
     } } };
 
-    std::array<std::string, n> names { "1", "2", "3", "4", "5", "6", "7" };
+    std::cout<<graph<<'\n';
 
-    std::cout << graph
-              << "\nPrim (start = " << names[0] << "): \n\n"
-              << graphs::prim(graph, 0);
+    std::cout <<"\nDFS start = 0\n";
+    graphs::dfs(graph, 0);
+    std::cout <<"\nBFS start = 0\n";
+    graphs::bfs(graph, 0);
+    std::cout <<"\nDijkstra start = 0\n";
+    graphs::dijkstra(graph, 0);
+    std::cout <<"\nPrim start = 0\n";
+    graphs::prim(graph, 0);
+    std::cout <<"\nKruskal\n";
+    graphs::kruskal(graph);
 }

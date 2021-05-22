@@ -8,10 +8,13 @@
 #include <numeric>
 #include <stack>
 
+#include <thread>
+#include <iostream>
+
 namespace graphs {
 
 template <std::size_t N, typename W>
-[[nodiscard]] auto kruskal(graph<N, W> g) -> graph<N, W>
+auto kruskal(graph<N, W> g) -> graph<N, W>
 {
     struct edge_t {
         std::size_t first {};
@@ -32,14 +35,18 @@ template <std::size_t N, typename W>
 
     graph<N, W> result {};
 
-    for (edge_t k { edges.front() }; !edges.empty();) {
-        if (!result.connected(k.first, k.second)) {
-            result.set(k.first, k.second, k.weight);
-        }
+    std::cout<<result;
 
-        edges.erase(edges.begin());
-        k = edges.front();
+    for (const auto& edge : edges) {
+        if (!result.connected(edge.first, edge.second)) {
+            result.set(edge.first, edge.second, edge.weight);
+
+            std::this_thread::sleep_for(std::chrono::seconds{2});
+            std::cout<<"\033["<<std::to_string(N)<<"A\r"<<result;
+        }
     }
+
+    std::cout<<'\n';
 
     return result;
 }

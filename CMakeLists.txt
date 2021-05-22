@@ -17,23 +17,14 @@ include_directories(
     )
 
 add_library(graphs OBJECT ${GRAPHS_HEADER_FILES})
-add_executable(dijkstra ${DIJKSTRA_SOURCE_FILES})
-add_executable(kruskal ${KRUSKAL_SOURCE_FILES})
-add_executable(prim ${PRIM_SOURCE_FILES})
+add_executable(examples ${EXAMPLES_SOURCE_FILES})
 
 set_target_properties(graphs PROPERTIES LINKER_LANGUAGE CXX)
 
 
-target_link_libraries(dijkstra
+target_link_libraries(examples
     graphs
+    pthread
     )
 
-target_link_libraries(kruskal
-    graphs
-    )
-
-target_link_libraries(prim
-    graphs
-    )
-
-add_custom_target(clangformat COMMAND clang-format -style=WebKit -i ${DIJKSTRA_SOURCE_FILES} ${KRUSKAL_SOURCE_FILES} ${PRIM_SOURCE_FILES} ${GRAPHS_HEADER_FILES})
+add_custom_target(clangformat COMMAND clang-format -style=WebKit -i ${DIJKSTRA_SOURCE_FILES} ${KRUSKAL_SOURCE_FILES} ${PRIM_SOURCE_FILES} ${EXAMPLES_SOURCE_FILES} ${GRAPHS_HEADER_FILES})
