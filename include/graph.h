@@ -12,6 +12,7 @@
 #include <type_traits>
 #include <vector>
 #include <map>
+#include <cassert>
 
 namespace graphs {
 
@@ -60,6 +61,12 @@ graph<N, W, S, D>::graph(const std::array<std::array<W, N>, N>& matrix)
 {
     for (std::size_t i { 0 }; i < N; i++) {
         for (std::size_t j { 0 }; j < N; j++) {
+            if (S && (matrix[i][j] != matrix[j][i])) {
+                std::cerr<<"Matrix is not symmetric.\n"
+                        <<"a_"<<std::to_string(i)<<','<<std::to_string(j)<<'='<<std::to_string(matrix[i][j])<<'\n'
+                        <<"a_"<<std::to_string(j)<<','<<std::to_string(i)<<'='<<std::to_string(matrix[j][i])<<'\n';
+                assert(matrix[i][j] == matrix[j][i]);
+            }
             m_edges[pos(i, j)] = matrix[i][j];
         }
     }
