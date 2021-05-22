@@ -22,6 +22,10 @@ add_executable(maze ${MAZE_SOURCE_FILES})
 
 set_target_properties(graphs PROPERTIES LINKER_LANGUAGE CXX)
 
+find_package(
+  Boost 1.71
+  COMPONENTS system program_options
+  REQUIRED)
 
 target_link_libraries(examples
     graphs
@@ -30,6 +34,7 @@ target_link_libraries(examples
 target_link_libraries(maze
     graphs
     pthread
+    ${Boost_LIBRARIES}
     )
 
 add_custom_target(clangformat COMMAND clang-format -style=WebKit -i ${DIJKSTRA_SOURCE_FILES} ${KRUSKAL_SOURCE_FILES} ${PRIM_SOURCE_FILES} ${EXAMPLES_SOURCE_FILES} ${GRAPHS_HEADER_FILES})
