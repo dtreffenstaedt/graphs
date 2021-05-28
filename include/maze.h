@@ -14,12 +14,11 @@ class maze {
 public:
     maze(std::size_t x, std::size_t y);
 
-    void show();
+    void print(std::ostream& out = std::cout);
 
     [[nodiscard]] auto graph() const -> graphs::graph<bool>;
 
 private:
-    void show(std::size_t first, std::size_t second);
     void generate();
     void generate_graph();
     void generate_maze();
@@ -29,6 +28,9 @@ private:
     std::size_t m_y {};
     graphs::graph<bool> m_graph;
 };
+
+template <typename W, bool S, W D>
+auto operator<<(std::ostream& stream, const maze& m) -> std::ostream&;
 
 maze::maze(std::size_t x, std::size_t y)
     : m_x { x }
@@ -71,7 +73,6 @@ void maze::generate_maze()
     };
 
     std::vector<edge_t> edges {};
-    std::cout<<std::to_string(m_graph.dimension())<<'\n';
 
     for (std::size_t i { 0 }; i < (m_graph.dimension() - 1); i++) {
         for (std::size_t j { i + 1 }; j < m_graph.dimension(); j++) {
@@ -101,40 +102,46 @@ void maze::generate_maze()
     }
 
     std::cout<<'\n';
-    show();
 }
 
-void maze::show()
+void maze::print(std::ostream& out)
 {
     for (std::size_t y { 0 }; y < m_y; y++) {
         for (std::size_t x { 0 }; x < m_x; x++) {
             if (x < (m_x - 1)) {
                 if (m_graph.weight(pos(x,y), pos(x+1,y))) {
-                    std::cout<<"·-";
+                    out<<"·-";
                 } else {
-                    std::cout<<"· ";
+                    out<<"· ";
                 }
             } else {
-                std::cout<<"·";
+                out<<"·";
             }
         }
-        std::cout<<'\n';
+        out<<'\n';
         for (std::size_t x { 0 }; x < m_x; x++) {
             if (y < (m_y - 1)) {
                 if (m_graph.weight(pos(x,y), pos(x,y+1))) {
-                    std::cout<<"| ";
+                    out<<"| ";
                 } else {
-                    std::cout<<"  ";
+                    out<<"  ";
                 }
             }
         }
-        std::cout<<'\n';
+        out<<'\n';
     }
 }
 
 auto maze::graph() const -> graphs::graph<bool>
 {
     return m_graph;
+}
+
+template <typename W, bool S, W D>
+auto operator<<(std::ostream& stream, const maze& m) -> std::ostream&
+{
+    m.print(stream);
+    return stream;
 }
 }
 
