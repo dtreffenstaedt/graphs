@@ -23,8 +23,8 @@ class graph {
     static_assert(std::is_integral<W>::value);
 
 public:
-    graph(const std::vector<std::vector<W>>& matrix);
-    graph(std::size_t dimension);
+    graph(const std::vector<std::vector<W>>& matrix, bool colour = true);
+    graph(std::size_t dimension, bool colour = true);
 
     void set(std::size_t i, std::size_t j, W weight = D);
 
@@ -52,6 +52,7 @@ private:
 
     std::vector<W> m_edges {};
     std::size_t m_dimension {};
+    bool m_colour { true };
 };
 
 template <typename W, bool S, W D>
@@ -64,8 +65,9 @@ auto operator<<(std::ostream& stream, const graph<W, S, D>& g) -> std::ostream&;
 
 namespace graphs {
 template <typename W, bool S, W D>
-graph<W, S, D>::graph(const std::vector<std::vector<W>>& matrix)
+graph<W, S, D>::graph(const std::vector<std::vector<W>>& matrix, bool colour)
     : m_dimension { matrix.size()}
+    , m_colour { colour }
 {
     m_edges.resize(dimension() * dimension());
     for (std::size_t i { 0 }; i < dimension(); i++) {
@@ -83,8 +85,9 @@ graph<W, S, D>::graph(const std::vector<std::vector<W>>& matrix)
 }
 
 template <typename W, bool S, W D>
-graph<W, S, D>::graph(std::size_t dimension)
+graph<W, S, D>::graph(std::size_t dimension, bool colour)
     : m_dimension { dimension }
+    , m_colour { colour }
 {
     m_edges.resize(m_dimension * m_dimension);
 }
@@ -167,10 +170,13 @@ void graph<W, S, D>::print(std::ostream& stream) const
         for (std::size_t j { 0 }; j < m_dimension; j++) {
             if (weight(i, j) == 0) {
                 stream << "";
-            } else {
+            } else if (m_colour) {
                 stream << "\033[1;31m";
             }
-            stream << ' ' << std::setw(2) << weight(i, j)<<"\033[0m";
+            stream << ' ' << std::setw(2) << weight(i, j);
+            if (m_colour) {
+                stream<<"\033[0m";
+            }
         }
         stream << '\n';
     }

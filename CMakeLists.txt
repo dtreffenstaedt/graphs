@@ -30,6 +30,7 @@ find_package(
 target_link_libraries(examples
     graphs
     pthread
+    ${Boost_LIBRARIES}
     )
 target_link_libraries(maze
     graphs

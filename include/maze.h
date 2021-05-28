@@ -12,9 +12,9 @@
 namespace graphs {
 class maze {
 public:
-    maze(std::size_t x, std::size_t y);
+    maze(std::size_t x, std::size_t y, bool colour = true);
 
-    void print(std::ostream& out = std::cout);
+    void print(std::ostream& out = std::cout) const;
 
     [[nodiscard]] auto graph() const -> graphs::graph<bool>;
 
@@ -32,10 +32,10 @@ private:
 template <typename W, bool S, W D>
 auto operator<<(std::ostream& stream, const maze& m) -> std::ostream&;
 
-maze::maze(std::size_t x, std::size_t y)
+maze::maze(std::size_t x, std::size_t y, bool colour)
     : m_x { x }
     , m_y { y }
-    , m_graph { x * y }
+    , m_graph { x * y, colour }
 {
     generate();
 }
@@ -85,9 +85,7 @@ void maze::generate_maze()
     std::random_device rd;
     std::mt19937 g(rd());
 
-    std::cout<<"Shuffling edges... ";
     std::shuffle(edges.begin(), edges.end(), g);
-    std::cout<<"shuffled\nRearranging edges...\n";
 
     std::size_t i { 0 };
     for (const auto& edge : edges) {
@@ -95,16 +93,11 @@ void maze::generate_maze()
         if (!m_graph.connected_bi_bfs(edge.first, edge.second)) {
             m_graph.set(edge.first, edge.second);
         }
-        std::ostringstream out{};
-        out<<std::setfill(' ')<<std::setw(7)<<i<<'/'<<std::setw(7)<<edges.size();
-        std::cout<<'\r'<<out.str();
         i++;
     }
-
-    std::cout<<'\n';
 }
 
-void maze::print(std::ostream& out)
+void maze::print(std::ostream& out) const
 {
     for (std::size_t y { 0 }; y < m_y; y++) {
         for (std::size_t x { 0 }; x < m_x; x++) {
@@ -137,7 +130,6 @@ auto maze::graph() const -> graphs::graph<bool>
     return m_graph;
 }
 
-template <typename W, bool S, W D>
 auto operator<<(std::ostream& stream, const maze& m) -> std::ostream&
 {
     m.print(stream);
