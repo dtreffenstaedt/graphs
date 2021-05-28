@@ -32,7 +32,7 @@ auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
 
     parents.at(start) = start; // set the parent of the start node to itself
 
-    graph<W> result { g.dimension() };
+    graph<W> result { g.dimension(), g.colour() };
 
     if (print) {
         std::cout << result;

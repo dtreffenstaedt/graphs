@@ -18,7 +18,9 @@ auto main(int argc, const char* argv[]) -> int
             ("third", "Show the dijkstra algorithm from the task sheet")
             ("prim,p", "Show the prim algorithm")
             ("dijkstra,d", "Show the dijkstra algorithm")
-            ("kruskal,k", "Show the kruksal algorithm");
+            ("kruskal,k", "Show the kruksal algorithm")
+            ("no-colour,n", "do not print using colour")
+            ;
 
     po::store(po::parse_command_line(argc, argv, desc), options);
     if ((options.count("help") != 0) || options.empty()) {
@@ -26,6 +28,7 @@ auto main(int argc, const char* argv[]) -> int
         return 0;
     }
     po::notify(options);
+    bool colour { options.count("no-colour") == 0 };
 
     if (options.count("third") != 0) {
         graphs::graph<std::size_t> graph { { {
@@ -36,7 +39,7 @@ auto main(int argc, const char* argv[]) -> int
             { 0, 13, 9, 30, 0, 0, 16 },
             { 0, 0, 0, 17, 0, 0, 22 },
             { 0, 0, 0, 12, 16, 22, 0 },
-        } } };
+        } }, colour };
         graphs::prim(graph, 0, true);
     }
 
@@ -49,7 +52,7 @@ auto main(int argc, const char* argv[]) -> int
             { 0, 6, 3, 0, 0, 1, 0 },
             { 0, 0, 0, 8, 1, 0, 0 },
             { 10, 9, 0, 0, 0, 0, 0 },
-        } } };
+        } } , colour};
         graphs::dijkstra(graph, 6, true);
     }
 
@@ -83,7 +86,7 @@ auto main(int argc, const char* argv[]) -> int
         { 45, 19, 23, 21, 22, 30, 34, 20, 15, 32, 20, 0, 18, 39, 41, 14, 37, 43, 9, 32, 45, 31, 33, 11, 38, 34, 0, 28, 8, 25 },
         { 7, 40, 50, 29, 22, 15, 38, 25, 28, 8, 40, 38, 23, 15, 12, 5, 31, 39, 34, 12, 19, 35, 44, 12, 18, 16, 28, 0, 40, 0 },
         { 10, 39, 18, 5, 49, 36, 44, 39, 23, 20, 30, 49, 17, 20, 3, 16, 4, 25, 15, 30, 9, 14, 41, 13, 23, 20, 8, 40, 0, 17 },
-        { 34, 36, 21, 33, 1, 12, 9, 27, 41, 9, 4, 24, 39, 30, 6, 12, 39, 46, 21, 15, 50, 44, 50, 5, 21, 14, 25, 0, 17, 0 } } } };
+        { 34, 36, 21, 33, 1, 12, 9, 27, 41, 9, 4, 24, 39, 30, 6, 12, 39, 46, 21, 15, 50, 44, 50, 5, 21, 14, 25, 0, 17, 0 } } } , colour};
 
     if (options.count("prim") != 0) {
         graphs::prim(graph, 0, true);

@@ -33,7 +33,7 @@ auto kruskal(graph<W> g, bool print = false) -> graph<W>
 
     std::sort(edges.begin(), edges.end(), [&](const edge_t& lhs, const edge_t& rhs) { return lhs.weight < rhs.weight; });
 
-    graph<W> result { g.dimension() };
+    graph<W> result { g.dimension(), g.colour() };
 
     if (print) {
         std::cout << result;

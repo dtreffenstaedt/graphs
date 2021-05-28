@@ -22,7 +22,7 @@ auto prim(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     unvisited.resize(g.dimension());
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
-    graph<W> result { g.dimension() };
+    graph<W> result { g.dimension(), g.colour() };
     if (print) {
         std::cout << result;
     }

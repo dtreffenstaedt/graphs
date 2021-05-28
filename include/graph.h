@@ -47,6 +47,7 @@ public:
 
     void print(std::ostream& stream = std::cout) const;
 
+    [[nodiscard]] auto colour() const -> bool;
 private:
     [[nodiscard]] auto pos(std::size_t i, std::size_t j) const -> std::size_t;
 
@@ -146,6 +147,12 @@ template <typename W, bool S, W D>
 auto graph<W, S, D>::dimension() const -> std::size_t
 {
     return m_dimension;
+}
+
+template <typename W, bool S, W D>
+auto graph<W, S, D>::colour() const -> bool
+{
+    return m_colour;
 }
 
 template <typename W, bool S, W D>
