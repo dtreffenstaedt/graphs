@@ -16,9 +16,11 @@ auto main(int argc, const char* argv[]) -> int
     desc.add_options()("help,h", "produce help message")
             ("first", "Show the prim algorithm from the task sheet")
             ("third", "Show the dijkstra algorithm from the task sheet")
-            ("prim,p", "Show the prim algorithm")
-            ("dijkstra,d", "Show the dijkstra algorithm")
-            ("kruskal,k", "Show the kruksal algorithm")
+            ("prim", po::value<std::size_t>(), "Show the prim algorithm")
+            ("dijkstra", po::value<std::size_t>(), "Show the dijkstra algorithm")
+            ("kruskal", "Show the kruksal algorithm")
+            ("bfs", po::value<std::size_t>(), "Show the bfs algorithm")
+            ("dfs", po::value<std::size_t>(), "Show the dfs algorithm")
             ("no-colour,n", "do not print using colour")
             ;
 
@@ -89,12 +91,14 @@ auto main(int argc, const char* argv[]) -> int
         { 34, 36, 21, 33, 1, 12, 9, 27, 41, 9, 4, 24, 39, 30, 6, 12, 39, 46, 21, 15, 50, 44, 50, 5, 21, 14, 25, 0, 17, 0 } } } , colour};
 
     if (options.count("prim") != 0) {
-        graphs::prim(graph, 0, true);
-    }
-    if (options.count("dijkstra") != 0) {
-        graphs::dijkstra(graph, 0, true);
-    }
-    if (options.count("kruskal") != 0) {
+        graphs::prim(graph, options["prim"].as<std::size_t>(), true);
+    } else if (options.count("dijkstra") != 0) {
+        graphs::dijkstra(graph, options["dijkstra"].as<std::size_t>(), true);
+    } else if (options.count("kruskal") != 0) {
         graphs::kruskal(graph, true);
+    } else if (options.count("bfs") != 0) {
+        graphs::bfs(graph, options["bfs"].as<std::size_t>(), true);
+    } else if (options.count("dfs") != 0) {
+        graphs::dfs(graph, options["dfs"].as<std::size_t>(), true);
     }
 }
