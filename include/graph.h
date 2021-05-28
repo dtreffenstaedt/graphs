@@ -173,6 +173,9 @@ void graph<W, S, D>::print(std::ostream& stream) const
             } else if (m_colour) {
                 stream << "\033[1;31m";
             }
+            if (m_colour && (i == j)) {
+                stream << "\033[1;34m";
+            }
             stream << ' ' << std::setw(2) << weight(i, j);
             if (m_colour) {
                 stream << "\033[0m";
