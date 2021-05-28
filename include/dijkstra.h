@@ -7,8 +7,8 @@
 #include <limits>
 #include <numeric>
 
-#include <thread>
 #include <iostream>
+#include <thread>
 
 namespace graphs {
 
@@ -32,10 +32,10 @@ auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
 
     parents.at(start) = start; // set the parent of the start node to itself
 
-    graph<W> result {g.dimension()};
+    graph<W> result { g.dimension() };
 
     if (print) {
-        std::cout<<result;
+        std::cout << result;
     }
 
     for (std::size_t i { start }; !unvisited.empty();) {
@@ -60,9 +60,9 @@ auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
                     parents.at(j) = i;
 
                     if (print) {
-                        std::this_thread::sleep_for(std::chrono::milliseconds{300});
-                        std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
-                        std::this_thread::sleep_for(std::chrono::milliseconds{300});
+                        std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
+                        std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
+                        std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
                     }
                 }
             }
@@ -76,7 +76,7 @@ auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     }
 
     if (print) {
-        std::cout<<'\n';
+        std::cout << '\n';
     }
     return result;
 }

@@ -23,16 +23,16 @@ auto dfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     };
 
     std::stack<edge_t> stack {};
-    stack.emplace(edge_t{start, start, 0});
+    stack.emplace(edge_t { start, start, 0 });
 
     std::vector<std::size_t> unvisited {};
     unvisited.resize(g.dimension());
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
-    graph<W> result {g.dimension()};
+    graph<W> result { g.dimension() };
 
     if (print) {
-        std::cout<<result;
+        std::cout << result;
     }
 
     for (edge_t i { stack.top() }; !stack.empty(); i = stack.top()) {
@@ -46,21 +46,21 @@ auto dfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
         result.set(i.parent, i.i, i.weight);
 
         if (print) {
-            std::this_thread::sleep_for(std::chrono::milliseconds{300});
-            std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
-            std::this_thread::sleep_for(std::chrono::milliseconds{300});
+            std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
+            std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
+            std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
         }
 
-        for (const auto& j: unvisited) {
+        for (const auto& j : unvisited) {
             const auto w { g.weight(i.i, j) };
             if (w == 0) {
                 continue;
             }
-            stack.emplace(edge_t{j, i.i, w});
+            stack.emplace(edge_t { j, i.i, w });
         }
     }
     if (print) {
-        std::cout<<'\n';
+        std::cout << '\n';
     }
 
     return result;

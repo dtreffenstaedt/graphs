@@ -8,8 +8,8 @@
 #include <numeric>
 #include <queue>
 
-#include <thread>
 #include <iostream>
+#include <thread>
 
 namespace graphs {
 
@@ -23,16 +23,16 @@ auto bfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     };
 
     std::queue<edge_t> queue {};
-    queue.emplace(edge_t{start, start, 0});
+    queue.emplace(edge_t { start, start, 0 });
 
     std::vector<std::size_t> unvisited {};
     unvisited.resize(g.dimension());
     std::iota(unvisited.begin(), unvisited.end(), 0);
 
-    graph<W> result {g.dimension()};
+    graph<W> result { g.dimension() };
 
     if (print) {
-        std::cout<<result;
+        std::cout << result;
     }
 
     for (edge_t i { queue.front() }; !queue.empty(); i = queue.front()) {
@@ -46,22 +46,22 @@ auto bfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
         result.set(i.parent, i.i, i.weight);
 
         if (print) {
-            std::this_thread::sleep_for(std::chrono::milliseconds{300});
-            std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
-            std::this_thread::sleep_for(std::chrono::milliseconds{300});
+            std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
+            std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
+            std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
         }
 
-        for (const auto& j: unvisited) {
+        for (const auto& j : unvisited) {
             const auto w { g.weight(i.i, j) };
             if (w == 0) {
                 continue;
             }
-            queue.emplace(edge_t{j, i.i, w});
+            queue.emplace(edge_t { j, i.i, w });
         }
     }
 
     if (print) {
-        std::cout<<'\n';
+        std::cout << '\n';
     }
 
     return result;

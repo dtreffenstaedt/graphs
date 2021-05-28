@@ -3,10 +3,9 @@
 
 #include "graph.h"
 
-
-#include <random>
 #include <algorithm>
 #include <iostream>
+#include <random>
 #include <thread>
 
 namespace graphs {
@@ -42,7 +41,7 @@ maze::maze(std::size_t x, std::size_t y, bool colour)
 
 auto maze::pos(std::size_t x, std::size_t y) const -> std::size_t
 {
-    return m_x*y + x;
+    return m_x * y + x;
 }
 
 void maze::generate()
@@ -56,10 +55,10 @@ void maze::generate_graph()
     for (std::size_t x { 0 }; x < m_x; x++) {
         for (std::size_t y { 0 }; y < m_y; y++) {
             if (x < (m_x - 1)) {
-                m_graph.set(pos(x, y), pos(x + 1,y));
+                m_graph.set(pos(x, y), pos(x + 1, y));
             }
             if (y < (m_y - 1)) {
-                m_graph.set(pos(x, y), pos(x,y + 1));
+                m_graph.set(pos(x, y), pos(x, y + 1));
             }
         }
     }
@@ -102,26 +101,26 @@ void maze::print(std::ostream& out) const
     for (std::size_t y { 0 }; y < m_y; y++) {
         for (std::size_t x { 0 }; x < m_x; x++) {
             if (x < (m_x - 1)) {
-                if (m_graph.weight(pos(x,y), pos(x+1,y))) {
-                    out<<"·-";
+                if (m_graph.weight(pos(x, y), pos(x + 1, y))) {
+                    out << "·-";
                 } else {
-                    out<<"· ";
+                    out << "· ";
                 }
             } else {
-                out<<"·";
+                out << "·";
             }
         }
-        out<<'\n';
+        out << '\n';
         for (std::size_t x { 0 }; x < m_x; x++) {
             if (y < (m_y - 1)) {
-                if (m_graph.weight(pos(x,y), pos(x,y+1))) {
-                    out<<"| ";
+                if (m_graph.weight(pos(x, y), pos(x, y + 1))) {
+                    out << "| ";
                 } else {
-                    out<<"  ";
+                    out << "  ";
                 }
             }
         }
-        out<<'\n';
+        out << '\n';
     }
 }
 

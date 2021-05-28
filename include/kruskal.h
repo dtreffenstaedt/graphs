@@ -8,8 +8,8 @@
 #include <numeric>
 #include <stack>
 
-#include <thread>
 #include <iostream>
+#include <thread>
 
 namespace graphs {
 
@@ -33,26 +33,26 @@ auto kruskal(graph<W> g, bool print = false) -> graph<W>
 
     std::sort(edges.begin(), edges.end(), [&](const edge_t& lhs, const edge_t& rhs) { return lhs.weight < rhs.weight; });
 
-    graph<W> result {g.dimension()};
+    graph<W> result { g.dimension() };
 
     if (print) {
-        std::cout<<result;
+        std::cout << result;
     }
 
     for (const auto& edge : edges) {
         if (!result.connected_bi_bfs(edge.first, edge.second)) {
             result.set(edge.first, edge.second, edge.weight);
 
-        if (print) {
-                std::this_thread::sleep_for(std::chrono::milliseconds{300});
-                std::cout<<"\033["<<std::to_string(g.dimension())<<"A\r"<<result;
-                std::this_thread::sleep_for(std::chrono::milliseconds{300});
-        }
+            if (print) {
+                std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
+                std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
+                std::this_thread::sleep_for(std::chrono::milliseconds { 300 });
+            }
         }
     }
 
     if (print) {
-        std::cout<<'\n';
+        std::cout << '\n';
     }
 
     return result;
