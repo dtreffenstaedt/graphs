@@ -5,30 +5,58 @@
 #include "bfs.h"
 
 #include <iostream>
+#include <boost/program_options.hpp>
 
-auto main() -> int
+auto main(int argc, const char* argv[]) -> int
 {
+    namespace po = boost::program_options;
+    po::variables_map options {};
+
+    po::options_description desc("General options");
+    desc.add_options()
+            ("help,h", "produce help message")
+            ("first", "Show the prim algorithm from the task sheet")
+            ("third", "Show the dijkstra algorithm from the task sheet")
+
+            ("prim,p", "Show the prim algorithm")
+            ("dijkstra,d", "Show the dijkstra algorithm")
+            ("kruskal,k", "Show the kruksal algorithm")
+            ;
+
+    po::store(po::parse_command_line(argc, argv, desc), options);
+    if ((options.count("help") != 0) || options.empty()) {
+        std::cout<<desc;
+        return 0;
+    }
+    po::notify(options);
 
 
+    if (options.count("third") != 0) {
+        graphs::graph<std::size_t> graph { { {
+            { 0, 14, 0, 10, 0, 0, 0 },
+            { 14, 0, 16, 18, 13, 0, 0 },
+            { 0, 16, 0, 0, 9, 0, 0 },
+            { 10, 18, 0, 0, 30, 17, 12 },
+            { 0, 13, 9, 30, 0, 0, 16 },
+            { 0, 0, 0, 17, 0, 0, 22 },
+            { 0, 0, 0, 12, 16, 22, 0 },
+        } } };
+        graphs::prim(graph, 0, true);
+    }
 
-    graphs::graph<std::size_t> graph { { {
-        { 0, 14, 0, 10, 0, 0, 0 },
-        { 14, 0, 16, 18, 13, 0, 0 },
-        { 0, 16, 0, 0, 9, 0, 0 },
-        { 10, 18, 0, 0, 30, 17, 12 },
-        { 0, 13, 9, 30, 0, 0, 16 },
-        { 0, 0, 0, 17, 0, 0, 22 },
-        { 0, 0, 0, 12, 16, 22, 0 },
-    } } };
-/*    graphs::graph<std::size_t> graph { { {
-        { 0, 0, 0, 8, 0, 0, 10 },
-        { 0, 0, 2, 0, 6, 0, 9 },
-        { 0, 2, 0, 2, 3, 0, 0 },
-        { 8, 0, 2, 0, 0, 8, 0 },
-        { 0, 6, 3, 0, 0, 1, 0 },
-        { 0, 0, 0, 8, 1, 0, 0 },
-        { 10, 9, 0, 0, 0, 0, 0 },
-    } } };
+    if (options.count("first") != 0) {
+        graphs::graph<std::size_t> graph { { {
+            { 0, 0, 0, 8, 0, 0, 10 },
+            { 0, 0, 2, 0, 6, 0, 9 },
+            { 0, 2, 0, 2, 3, 0, 0 },
+            { 8, 0, 2, 0, 0, 8, 0 },
+            { 0, 6, 3, 0, 0, 1, 0 },
+            { 0, 0, 0, 8, 1, 0, 0 },
+            { 10, 9, 0, 0, 0, 0, 0 },
+        } } };
+        graphs::dijkstra(graph, 6, true);
+    }
+
 
     graphs::graph<std::size_t> graph {{ {
         { 0 ,19 ,27 ,33 ,11 ,30 ,48 ,27 ,39 , 8 ,11 , 7 ,21 , 6 ,43 ,14 ,21 ,16 ,31 ,41 , 7 ,24 , 3 , 5 ,12 ,10 ,45 , 7 ,10 ,34},
@@ -62,21 +90,16 @@ auto main() -> int
         {10 ,39 ,18 , 5 ,49 ,36 ,44 ,39 ,23 ,20 ,30 ,49 ,17 ,20 , 3 ,16 , 4 ,25 ,15 ,30 , 9 ,14 ,41 ,13 ,23 ,20 , 8 ,40 , 0 ,17},
         {34 ,36 ,21 ,33 , 1 ,12 , 9 ,27 ,41 , 9 , 4 ,24 ,39 ,30 , 6 ,12 ,39 ,46 ,21 ,15 ,50 ,44 ,50 , 5 ,21 ,14 ,25 , 0 ,17 , 0}
     } } };
-*/
+
+    if (options.count("prim") != 0) {
+        graphs::prim(graph, 0, true);
+    }
+    if (options.count("dijkstra") != 0) {
+        graphs::dijkstra(graph, 0, true);
+    }
+    if (options.count("kruskal") != 0) {
+        graphs::kruskal(graph, true);
+    }
 
 
-
-
-    std::cout<<graph<<'\n';
-
-    std::cout <<"\nDFS start = 6\n";
-    graphs::dfs(graph, 6, true);
-    std::cout <<"\nBFS start = 6\n";
-    graphs::bfs(graph, 6, true);
-    std::cout <<"\nDijkstra start = 6\n";
-    graphs::dijkstra(graph, 6, true);
-    std::cout <<"\nPrim start = 6\n";
-    graphs::prim(graph, 6, true);
-    std::cout <<"\nKruskal\n";
-    graphs::kruskal(graph, true);
 }
