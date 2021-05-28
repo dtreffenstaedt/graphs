@@ -36,6 +36,7 @@ auto bfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     }
 
     for (edge_t i { queue.front() }; !queue.empty(); i = queue.front()) {
+        result.mark(i.i);
         queue.pop();
         const auto it = std::find(unvisited.begin(), unvisited.end(), i.i);
         if (it == unvisited.end()) {
@@ -60,10 +61,11 @@ auto bfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
         }
     }
 
-    if (print) {
-        std::cout << '\n';
-    }
 
+    result.unmark();
+    if (print) {
+        std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
+    }
     return result;
 }
 

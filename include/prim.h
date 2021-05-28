@@ -28,6 +28,7 @@ auto prim(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     }
 
     for (std::size_t k { start }; !unvisited.empty();) {
+        result.mark(k);
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), k));
         visited.emplace_back(k);
 
@@ -65,8 +66,9 @@ auto prim(graph<W> g, std::size_t start, bool print = false) -> graph<W>
         }
     }
 
+    result.unmark();
     if (print) {
-        std::cout << '\n';
+        std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
     }
 
     return result;

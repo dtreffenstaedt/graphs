@@ -48,12 +48,16 @@ public:
     void print(std::ostream& stream = std::cout) const;
 
     [[nodiscard]] auto colour() const -> bool;
+    void mark(std::size_t index);
+    void unmark();
 private:
     [[nodiscard]] auto pos(std::size_t i, std::size_t j) const -> std::size_t;
 
     std::vector<W> m_edges {};
     std::size_t m_dimension {};
     bool m_colour { true };
+    std::size_t m_marked { 0 };
+    bool m_has_mark { false };
 };
 
 template <typename W, bool S, W D>
@@ -91,6 +95,19 @@ graph<W, S, D>::graph(std::size_t dimension, bool colour)
     , m_colour { colour }
 {
     m_edges.resize(m_dimension * m_dimension);
+}
+
+template <typename W, bool S, W D>
+void graph<W, S, D>::mark(std::size_t index)
+{
+    m_marked = index;
+    m_has_mark = true;
+}
+
+template <typename W, bool S, W D>
+void graph<W, S, D>::unmark()
+{
+    m_has_mark = false;
 }
 
 template <typename W, bool S, W D>
@@ -175,6 +192,11 @@ void graph<W, S, D>::print(std::ostream& stream) const
     stream << std::setfill(' ');
     for (std::size_t i { 0 }; i < m_dimension; i++) {
         for (std::size_t j { 0 }; j < m_dimension; j++) {
+            if (m_has_mark && m_colour) {
+                if ((i == m_marked) || (j == m_marked)) {
+                    stream << "\033[1;32m";
+                }
+            }
             if (weight(i, j) == 0) {
                 stream << "";
             } else if (m_colour) {

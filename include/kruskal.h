@@ -50,11 +50,6 @@ auto kruskal(graph<W> g, bool print = false) -> graph<W>
             }
         }
     }
-
-    if (print) {
-        std::cout << '\n';
-    }
-
     return result;
 }
 

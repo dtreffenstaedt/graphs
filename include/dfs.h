@@ -36,6 +36,7 @@ auto dfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     }
 
     for (edge_t i { stack.top() }; !stack.empty(); i = stack.top()) {
+        result.mark(i.i);
         stack.pop();
         const auto it = std::find(unvisited.begin(), unvisited.end(), i.i);
         if (it == unvisited.end()) {
@@ -59,10 +60,12 @@ auto dfs(graph<W> g, std::size_t start, bool print = false) -> graph<W>
             stack.emplace(edge_t { j, i.i, w });
         }
     }
-    if (print) {
-        std::cout << '\n';
-    }
 
+
+    result.unmark();
+    if (print) {
+        std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
+    }
     return result;
 }
 

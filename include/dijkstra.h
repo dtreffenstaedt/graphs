@@ -39,6 +39,7 @@ auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
     }
 
     for (std::size_t i { start }; !unvisited.empty();) {
+        result.mark(i);
         unvisited.erase(std::find(unvisited.begin(), unvisited.end(), i));
 
         std::size_t min_i { 0 };
@@ -75,8 +76,9 @@ auto dijkstra(graph<W> g, std::size_t start, bool print = false) -> graph<W>
         i = min_i;
     }
 
+    result.unmark();
     if (print) {
-        std::cout << '\n';
+        std::cout << "\033[" << std::to_string(g.dimension()) << "A\r" << result;
     }
     return result;
 }
