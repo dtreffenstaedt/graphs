@@ -108,21 +108,21 @@ void maze::print(std::ostream& out) const
         for (std::size_t x { 0 }; x < m_x; x++) {
             if (x < (m_x - 1)) {
                 if (m_graph.weight(pos(x, y), pos(x + 1, y))) {
-                    out << "·-";
+                    out << "████";
                 } else {
-                    out << "· ";
+                    out << "██  ";
                 }
             } else {
-                out << "·";
+                out << "██";
             }
         }
         out << '\n';
         for (std::size_t x { 0 }; x < m_x; x++) {
             if (y < (m_y - 1)) {
                 if (m_graph.weight(pos(x, y), pos(x, y + 1))) {
-                    out << "| ";
+                    out << "██  ";
                 } else {
-                    out << "  ";
+                    out << "    ";
                 }
             }
         }
