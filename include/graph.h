@@ -30,6 +30,8 @@ public:
 
     void unset(std::size_t i, std::size_t j);
 
+    void clear();
+
     auto remove_weight() const -> graph<bool>;
 
     [[nodiscard]] auto neighbours(std::size_t i) const -> std::map<std::size_t, W>;
@@ -122,7 +124,13 @@ void graph<W, S, D>::set(std::size_t i, std::size_t j, W weight)
 template <typename W, bool S, W D>
 void graph<W, S, D>::unset(std::size_t i, std::size_t j)
 {
-    set(std::move(i), std::move(j), 0);
+    set(std::move(i), std::move(j), W{});
+}
+
+template <typename W, bool S, W D>
+void graph<W, S, D>::clear()
+{
+    std::fill(m_edges.begin(), m_edges.end(), W{});
 }
 
 template <typename W, bool S, W D>
