@@ -11,7 +11,7 @@
 namespace graphs {
 class maze {
 public:
-    maze(std::size_t x, std::size_t y, bool colour = true);
+    maze(std::size_t x, std::size_t y, bool colour = true, double circle_probability = 0.0);
 
     void print(std::ostream& out = std::cout) const;
 
@@ -26,15 +26,17 @@ private:
     std::size_t m_x {};
     std::size_t m_y {};
     graphs::graph<bool> m_graph;
+    double m_circle_probability;
 };
 
 template <typename W, bool S, W D>
 auto operator<<(std::ostream& stream, const maze& m) -> std::ostream&;
 
-maze::maze(std::size_t x, std::size_t y, bool colour)
+maze::maze(std::size_t x, std::size_t y, bool colour, double circle_probability)
     : m_x { x }
     , m_y { y }
     , m_graph { x * y, colour }
+    , m_circle_probability { circle_probability }
 {
     generate();
 }
@@ -85,11 +87,15 @@ void maze::generate_maze()
     std::mt19937 g(rd());
 
     std::shuffle(edges.begin(), edges.end(), g);
+    std::bernoulli_distribution dist(m_circle_probability);
+
+    m_graph.clear();
 
     std::size_t i { 0 };
     for (const auto& edge : edges) {
-        m_graph.unset(edge.first, edge.second);
         if (!m_graph.connected_bi_bfs(edge.first, edge.second)) {
+            m_graph.set(edge.first, edge.second);
+        } else if ((m_circle_probability > 0) && dist(g)) {
             m_graph.set(edge.first, edge.second);
         }
         i++;

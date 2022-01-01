@@ -14,6 +14,7 @@ auto main(int argc, const char* argv[]) -> int
             ("help,h", "produce help message")
             ("x_dimension,x", po::value<std::size_t>()->required(), "X Dimension of maze to generate")
             ("y_dimension,y", po::value<std::size_t>()->required(), "Y Dimension of maze to generate")
+            ("difficulty,d", po::value<double>()->default_value(0.0), "probability for an edge which would otherwise create a circle to be set anyway.")
             ("no-colour,n", "do not print using colour")
             ;
 
@@ -29,8 +30,9 @@ auto main(int argc, const char* argv[]) -> int
 
     std::size_t x { options["x_dimension"].as<std::size_t>() };
     std::size_t y { options["y_dimension"].as<std::size_t>() };
+    double difficulty { options["difficulty"].as<double>() };
 
-    graphs::maze m {x, y, colour};
+    graphs::maze m {x, y, colour, difficulty};
 
     std::cout<<m;
 
